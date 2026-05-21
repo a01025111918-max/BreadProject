@@ -1,0 +1,15 @@
+.footer_wrap {
+  width: 100%;
+  min-height: 200px;
+  background-color: aliceblue;
+}
+
+.footer_content {
+  display: flex;
+}
+
+.footer_content > p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

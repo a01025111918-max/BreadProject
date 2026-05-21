@@ -1,0 +1,54 @@
+.header_wrap {
+  background-color: #ff6b00;
+  padding: 20px;
+  margin: 0px;
+}
+
+.header_wrap > div {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  gap: 50px;
+  justify-content: space-between;
+
+  position: relative;
+}
+
+.header_title {
+  display: flex;
+  background-color: #ff6b00;
+  margin: 0px;
+  padding: 0px;
+  align-items: center;
+  gap: 14px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header_title > a {
+  text-decoration: none;
+  color: black;
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.header_menu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  font-size: 20px;
+  gap: 24px;
+  flex-grow: 1;
+}
+
+.header_menu > li > a {
+  text-decoration: none;
+  color: black;
+}
+
+.member_link_zone {
+  display: flex; /*서로의 칸을 띄어쓰는 역할*/
+  gap: 10px;
+}

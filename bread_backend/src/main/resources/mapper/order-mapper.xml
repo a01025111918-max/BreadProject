@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    MyBatis Mapper XML 선언부
+
+    mapper XML은 DAO 인터페이스와 연결되어
+    실제 SQL을 실행하는 역할을 한다.
+
+    namespace 값은 반드시 DAO의 전체 경로와 일치해야 한다.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.Bread_project.order.model.dao.OrderDao">
+
+    <!--
+        회원 현재 잔액 조회
+
+        사용 목적:
+        - 결제 후 balance_after 저장
+        - 잔액 확인 로직
+        - 로그 기록
+
+        memberNo를 기준으로
+        member_account_tbl의 balance 조회
+    -->
+    <select id="selectBalance"
+            parameterType="int"
+            resultType="int">
+
+        select balance
+        from member_account_tbl
+        where member_no = #{memberNo}
+
+    </select>
+
+
+    <!--
+        주문할 빵 정보 조회
+
+        사용 목적:
+        - 빵 가격 조회
+        - 총 결제 금액 계산
+
+        bread_tbl에서 bread_no 기준으로 조회
+    -->
+    <select id="selectOneBread"
+            parameterType="int"
+            resultType="bread">
+
+        SELECT *
+        FROM bread_tbl
+        WHERE bread_no = #{breadNo}
+
+    </select>
+
+
+    <!--
+        주문 생성 로직
+
+        매우 중요한 단계.
+
+        account_log_tbl에는 order_no가 필요하므로
+        결제 처리 전에 먼저 order_tbl에 주문을 생성한다.
+    -->
+    <insert id="insertOrder"
+            parameterType="order">
+
+        <!--
+            Oracle Sequence를 이용한 주문번호 생성
+
+            order="BEFORE"
+            -> INSERT 전에 sequence 값을 먼저 가져온다.
+
+            keyProperty="orderNo"
+            -> 생성된 sequence 값을
+               Order 객체의 orderNo 필드에 다시 저장한다.
+
+            즉 insert 이후:
+            order.getOrderNo()
+            사용 가능해진다.
+        -->
+        <selectKey
+                keyProperty="orderNo"
+                resultType="int"
+                order="BEFORE">
+
+            select order_seq.nextval from dual
+
+        </selectKey>
+
+        <!--
+            실제 주문 데이터 저장
+
+            order_status:
+            COMPLETED
+            -> 결제까지 완료된 주문 상태
+        -->
+        insert into order_tbl(
+
+        order_no,
+        member_no,
+        bread_no,
+        order_count,
+        total_price,
+        order_status,
+        order_date
+
+        ) values(
+
+        #{orderNo},
+        #{memberNo},
+        #{breadNo},
+        #{orderCount},
+        #{totalPrice},
+
+        'COMPLETED',
+
+        SYSDATE
+
+        )
+
+    </insert>
+
+
+    <!--
+        구매자 계좌 잔액 차감 로직
+
+        사용자의 가상계좌에서
+        totalPrice만큼 balance 감소
+
+        중요한 조건:
+        balance >= #{totalPrice}
+
+        -> 잔액 부족 시 update가 실행되지 않도록 방지
+
+        반환값:
+        1 = 차감 성공
+        0 = 잔액 부족 또는 실패
+    -->
+    <update id="minusBalance"
+            parameterType="com.example.Bread_project.order.model.vo.Order">
+
+        UPDATE member_account_tbl
+
+        SET balance = balance - #{totalPrice}
+
+        WHERE member_no = #{memberNo}
+
+          AND account_status = 'ACTIVE'
+
+          AND balance >= #{totalPrice}
+
+    </update>
+
+
+    <!--
+        사이트 계좌 입금 로직
+
+        구매자에게서 빠져나간 금액을
+        site_account_tbl에 입금한다.
+
+        현재 구조에서는:
+        구매자 -> 사이트 계좌
+
+        흐름으로 설계되어 있다.
+    -->
+    <update id="plusSellerBalance"
+            parameterType="com.example.Bread_project.order.model.vo.Order">
+
+        UPDATE site_account_tbl
+
+        SET balance = balance + #{totalPrice}
+
+        WHERE account_status = 'ACTIVE'
+
+    </update>
+
+
+    <!--
+        구매자 계좌번호 조회
+
+        사용 목적:
+        PAYMENT 로그 저장 시
+        어떤 계좌에서 돈이 빠져나갔는지 기록
+
+        memberNo를 기준으로
+        account_no 조회
+    -->
+    <select id="selectAccountNo"
+            parameterType="int"
+            resultType="int">
+
+        SELECT account_no
+        FROM member_account_tbl
+        WHERE member_no = #{memberNo}
+
+    </select>
+
+
+    <!--
+        거래 로그 저장
+
+        account_log_tbl에
+        PAYMENT / DEPOSIT 기록 저장
+
+        PAYMENT:
+        구매자 계좌에서 출금된 기록
+
+        DEPOSIT:
+        사이트 계좌에 입금된 기록
+
+        현재 구조에서는:
+        DEPOSIT의 member_no는 NULL 가능
+    -->
+    <insert id="insertAccountLog"
+            parameterType="accountLog">
+
+        insert into account_log_tbl(
+
+            log_no,
+            order_no,
+            account_no,
+            member_no,
+            change_type,
+            change_amount,
+            balance_after
+
+        )
+
+        values (
+
+                   account_log_seq.NEXTVAL,
+
+                   #{orderNo},
+
+                   #{accountNo},
+
+                   #{memberNo},
+
+                   #{changeType},
+
+                   #{changeAmount},
+
+                   #{balanceAfter}
+
+               )
+
+    </insert>
+
+
+    <!--
+        사이트 계좌 현재 잔액 조회
+
+        사용 목적:
+        DEPOSIT 로그 저장 시
+        balance_after 기록
+
+        예:
+        기존 잔액 44300
+        + 입금 4000
+        = 최종 잔액 48300
+    -->
+    <select id="selectSiteBalance"
+            parameterType="int"
+            resultType="int">
+
+        select balance
+        from site_account_tbl
+        where account_no = #{accountNo}
+
+    </select>
+
+    <!--
+    빵 재고 차감
+
+    주문한 빵의 재고를 주문 수량만큼 감소시킨다.
+
+    중요한 조건:
+    bread_stock >= #{orderCount}
+
+    이 조건이 있어야 재고보다 많은 수량을 주문했을 때
+    update가 실행되지 않는다.
+
+    반환값:
+    1 = 차감 성공
+    0 = 재고 부족 또는 실패
+-->
+
+    <update id="minusBreadStock"
+            parameterType="order">
+        update bread_tbl
+        <!--빵의 수량에서 총 구매한 빵의 갯수를 빼는 로직-->
+        set bread_stock = bread_stock - #{orderCount}
+        where bread_no = #{breadNo}
+        and bread_stock >= #{orderCount}
+    </update>
+
+</mapper>

@@ -1,0 +1,37 @@
+.join_wrap {
+  min-height: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  padding: 20px;
+  margin: 5px;
+  background-color: aliceblue;
+}
+
+.page_title {
+  text-align: center;
+}
+
+.input_wrap {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*아이디 중복체크 입력란 아래 메세지*/
+.success {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #1f9d55;
+}
+
+.fail {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #e03131;
+}

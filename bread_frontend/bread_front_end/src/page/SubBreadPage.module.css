@@ -1,0 +1,239 @@
+.sub_bread_page_wrap {
+  width: 100%;
+  padding: 60px 0;
+}
+
+.sub_bread_page_card {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  background-color: aliceblue;
+  border-radius: 70px;
+  overflow: hidden;
+}
+
+.img_box {
+  width: 36%;
+  background-color: #fff;
+  border: 4px solid #fff5e3;
+  border-radius: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.img_box img {
+  width: 100%;
+  object-fit: contain; /* 빵 모양이 잘리지 않게 설정 */
+}
+
+.bread_info_box {
+  flex: 1; /* 남은 공간을 모두 차지하도록 설정 info_box가*/
+  padding: 90px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bread_category {
+  color: #a97c50;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.bread_info_box h1 {
+  font-size: 38px;
+  margin-bottom: 16px;
+  color: #2b211d;
+}
+
+.bread_content {
+  font-size: 22px;
+  line-height: 1.5;
+  color: #2b211d;
+  margin-bottom: 28px;
+}
+
+.bread_price {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2b211d;
+}
+
+.bread_stock {
+  margin-top: 8px;
+  color: #777;
+}
+
+.order_zone {
+  width: 90%;
+  max-width: 1200px;
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.order_zone button {
+  padding: 14px 42px;
+  font-size: 18px;
+  background-color: #ff6b00;
+  color: white;
+  border: 2px solid #2b211d;
+  border-radius: 30px;
+}
+
+.order_zone button:hover {
+  cursor: pointer;
+}
+
+.order_popup_wrap {
+  position: fixed; /* 띄우기 */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*팝업 분야*/
+
+.order_popup_wrap {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order_overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.order_container {
+  width: 360px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 28px 24px;
+
+  position: relative;
+  z-index: 1000;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.order_container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 28px;
+  color: #222;
+}
+
+.info_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info_box p:first-child {
+  font-size: 16px;
+  color: #222;
+  font-weight: 500;
+}
+
+.info_box p:last-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+.count_input {
+  width: 100%;
+  height: 52px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+
+  padding: 0 14px;
+
+  font-size: 18px;
+
+  margin-bottom: 20px;
+
+  outline: none; 
+}
+
+.count_input:focus {
+  border-color: #ff7a00; 
+}
+
+.total_price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 16px;
+  color: #777;
+
+  margin-bottom: 28px;
+}
+
+.total_price span {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ff5a00;
+}
+
+.buy_btn {
+  width: 100%;
+  height: 54px;
+
+  border: none;
+  border-radius: 16px;
+
+  background-color: #ff7a00;
+  color: white;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  margin-bottom: 12px;
+
+  transition: 0.2s;
+}
+
+.buy_btn:hover {
+  background-color: #f06f00;
+}
+
+.close_btn {
+  width: 100%;
+  height: 52px;
+
+  border: none;
+  border-radius: 16px;
+
+  background-color: #f3f3f3;
+  color: #666;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.close_btn:hover {
+  background-color: #e8e8e8;
+}

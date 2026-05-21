@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml version="1.0" encoding="UTF-8"?>은 무조건 선랭되어야 함-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.Bread_project.bread.dao.BreadDao">
+    <select id="selectBreadList" resultType="bread">
+        select *
+        from bread_tbl
+        order by bread_no desc
+    </select>
+
+    <select id="selectOneBread" resultType="bread">
+        select *
+        from bread_tbl
+        where bread_no = #{breadNo}
+    </select>
+</mapper>
