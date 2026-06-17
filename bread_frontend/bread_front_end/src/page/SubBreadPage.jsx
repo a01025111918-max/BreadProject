@@ -56,6 +56,11 @@ const OrderPopup = ({ isOpen, onClose, breadDetail }) => {
     } catch (err) {
       console.log("상태코드:", err.response?.status);
       console.log("서버응답:", err.response?.data);
+      Swal.fire({
+        title: "주문에 실패하였습니다.",
+        text: "잔액을 확인해 주세요",
+        icon: "werning",
+      });
       return false;
     }
   };
@@ -149,6 +154,9 @@ const SubBreadPage = () => {
     breadNo: "",
     breadCategory: "",
   });
+
+  // 빵 상세 정보를 위한 상태값
+  const [breadNutrition, setBreadNutrition] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -161,6 +169,19 @@ const SubBreadPage = () => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  }, [breadNo]);
+
+  //빵 영양 상세 정보
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/nutrition`)
+      .then((res) => {
+        console.log("빵 영양 상세 정보:", res.data);
+        setBreadNutrition(res.data);
+      })
+      .catch((err) => {
+        console.log("빵 영양 상세 정보 조회 실패:", err);
       });
   }, [breadNo]);
 
@@ -239,6 +260,53 @@ const SubBreadPage = () => {
         onClose={() => setIsOpen(false)}
         breadDetail={breadDetail}
       />
+
+      {/* 빵 상세 정보 */}
+      {/*
+      section 여러 개 써도 문제 없음
+하지만 지금은 div가 더 단순하고 관리하기 쉬움
+큰 구역은 section, 작은 디자인 박스는 div
+      
+      
+      */}
+      <div className={styles.bread_detail_info_box}>
+        <h2>영양 정보 및 재료 소개</h2>
+
+        {breadNutrition ? (
+          <>
+            <div className={styles.detail_item_box}>
+              <h3>제품 설명</h3>
+              <p>{breadNutrition.detailDescription}</p>
+            </div>
+
+            <div className={styles.detail_item_box}>
+              <h3>영양 정보</h3>
+
+              <div className={styles.nutrition_grid}>
+                <p>1회 제공량 : {breadNutrition.servingSize}</p>
+                <p>칼로리 : {breadNutrition.caloriesKcal} kcal</p>
+                <p>탄수화물 : {breadNutrition.carbohydrateG} g</p>
+                <p>당류 : {breadNutrition.sugarG} g</p>
+                <p>단백질 : {breadNutrition.proteinG} g</p>
+                <p>지방 : {breadNutrition.fatG} g</p>
+                <p>나트륨 : {breadNutrition.sodiumMg} mg</p>
+              </div>
+            </div>
+
+            <div className={styles.detail_item_box}>
+              <h3>재료 소개</h3>
+              <p>{breadNutrition.ingredients}</p>
+            </div>
+
+            <div className={styles.detail_item_box}>
+              <h3>알레르기 정보</h3>
+              <p>{breadNutrition.allergyInfo}</p>
+            </div>
+          </>
+        ) : (
+          <p className={styles.no_detail_text}>등록된 영양 정보가 없습니다.</p>
+        )}
+      </div>
     </div>
   );
 };

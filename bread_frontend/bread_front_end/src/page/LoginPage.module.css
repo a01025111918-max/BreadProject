@@ -1,34 +1,253 @@
-.login_wrap {
-  width: 100%;
-  min-height: 500px;
+.login_page {
+  min-height: calc(100vh - 112px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: 76px 24px 96px;
+  background:
+  /*"배경 박스의 **왼쪽 위 구석(가로 20%, 세로 18% 지점)**에, 반지름이 전체의 28% 크기인 
+  아주 은은하고 투명한 주황색 원형 조명을 슥 잔상처럼 남기겠다"는 뜻*/
+    radial-gradient(
+      circle at 20% 18%,
+      rgba(255, 107, 0, 0.15),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 82% 76%,
+      rgba(201, 51, 104, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #fff4e6 0%, #fffaf3 48%, #fff7ef 100%);
+}
+
+.login_card {
+  width: min(100%, 980px);
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  overflow: hidden;
+  border: 4px solid #fff1df;
+  border-radius: 34px;
+  background: #fff;
+  box-shadow: 0 24px 46px rgba(112, 62, 20, 0.17);
+}
+
+.brand_panel {
+  position: relative;
+  display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  margin: 5px;
-  background-color: aliceblue;
-  border: 1px solid black;
+  justify-content: flex-end;
+  padding: 50px 42px;
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(60, 32, 19, 0.2), rgba(255, 107, 0, 0.1)),
+    url("/banner/custard-cream.png") center / cover;
 }
 
-.page_title {
-  margin: 0px;
-  text-align: center;
+.brand_panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 107, 0, 0.16),
+    rgba(64, 29, 12, 0.74)
+  );
 }
 
-form {
-  width: 500px;
-  min-height: 300px;
+.brand_panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.brand_badge {
+  width: fit-content;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #ff6b00;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.brand_panel h1 {
+  max-width: 310px;
+  margin: 0 0 14px;
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.brand_panel p {
+  max-width: 320px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 58px 60px;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 107, 0, 0.1),
+      transparent 34%
+    ),
+    #fffaf5;
+}
+
+.home_link {
+  width: fit-content;
+  margin-bottom: 30px;
+  color: #b04b00;
+  font-size: 15px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.home_link:hover {
+  color: #ff6b00;
+}
+
+.title_box {
+  margin-bottom: 34px;
+}
+
+.title_box span {
+  color: #c95100;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.title_box h2 {
+  margin: 7px 0 0;
+  color: #2b211d;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 900;
 }
 
 .input_wrap {
   display: flex;
-  padding: 40px; /*auto가 없으면 중앙으로 밀집됨*/
-  margin: 20px;
-  justify-content: center;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
+.input_wrap label {
+  color: #3a281f;
+  font-size: 16px;
+  font-weight: 800;
+}
 
+.input_wrap input {
+  width: 100%;
+  height: 56px;
+  margin-bottom: 10px;
+  padding: 0 18px;
+  border: 2px solid #f0dcc7;
+  border-radius: 16px;
+  background: #fff;
+  color: #2b211d;
+  font-size: 16px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input_wrap input:focus {
+  border-color: #ff8a24;
+  box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.13);
+}
+
+.login_btn {
+  width: 100%;
+  height: 58px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 18px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 20px rgba(184, 78, 0, 0.25);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.login_btn:hover:not(:disabled) {
+  background: #e95f00;
+  transform: translateY(-2px);
+}
+
+.login_btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.search_wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.search_wrap a {
+  color: #6b5548;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.search_wrap a:hover {
+  color: #ff6b00;
+}
+
+.search_wrap span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d9b99c;
+}
+
+@media (max-width: 820px) {
+  .login_page {
+    padding: 46px 18px 72px;
+  }
+
+  .login_card {
+    grid-template-columns: 1fr;
+  }
+
+  .brand_panel {
+    min-height: 230px;
+    padding: 36px 30px;
+  }
+
+  .brand_panel h1 {
+    font-size: 32px;
+  }
+
+  .login_form {
+    padding: 42px 28px;
+  }
+
+  .title_box h2 {
+    font-size: 36px;
+  }
+}

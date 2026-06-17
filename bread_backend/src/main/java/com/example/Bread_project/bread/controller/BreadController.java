@@ -2,6 +2,7 @@ package com.example.Bread_project.bread.controller;
 
 import com.example.Bread_project.bread.service.BreadService;
 import com.example.Bread_project.bread.vo.Bread;
+import com.example.Bread_project.bread.vo.BreadDetail;
 import com.example.Bread_project.member.model.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,17 @@ public class BreadController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 빵을 찾을 수 없습니다.");
+    }
+
+    //빵 영양 상세 정보 받아오기 로직
+    @GetMapping(value = "/{breadNo}/nutrition")
+    public ResponseEntity<?> selectOneNutrition(@PathVariable int breadNo){
+        BreadDetail breadDetail = breadService.selectOneNutrition(breadNo);
+        if(breadDetail != null){
+            return ResponseEntity.ok(breadDetail);
+
+        }else{
+            return ResponseEntity.ok("재료정보를 불러올 수 업습니다");
+        }
     }
 }

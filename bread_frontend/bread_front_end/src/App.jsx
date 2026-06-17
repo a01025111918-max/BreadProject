@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./commons/Header";
 import Footer from "./commons/Footer";
-import Main from "../../Main";
+import Main from "./page/Main";
 import JoinPage from "./page/JoinPage";
 import LoginPage from "./page/LoginPage";
 import SubBreadPage from "./page/SubBreadPage";

@@ -2,6 +2,7 @@ package com.example.Bread_project.bread.service;
 
 import com.example.Bread_project.bread.dao.BreadDao;
 import com.example.Bread_project.bread.vo.Bread;
+import com.example.Bread_project.bread.vo.BreadDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +25,9 @@ public class BreadService {
         return bread;
     }
 
-
+    //빵 영양 상세 조회
+    public BreadDetail selectOneNutrition(int breadNo) {
+        BreadDetail breadDetail = breadDao.selectOneNutrition(breadNo);
+        return breadDetail;
+    }
 }

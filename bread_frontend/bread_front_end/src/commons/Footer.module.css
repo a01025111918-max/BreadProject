@@ -1,15 +1,19 @@
 .footer_wrap {
   width: 100%;
-  min-height: 200px;
-  background-color: aliceblue;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2d211b;
+  color: #fff4e6;
 }
 
 .footer_content {
-  display: flex;
+  width: min(94%, 1200px);
+  text-align: center;
 }
 
-.footer_content > p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.footer_content p {
+  margin: 0;
+  font-size: 15px;
 }
