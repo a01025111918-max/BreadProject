@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.Bread_project.review.dao.BreadReviewDao">
+    <select id="selectReviewList" parameterType="int" resultType="breadReview">
+        select
+            r.review_no,
+            r.order_no,
+            r.bread_no,
+            r.member_no,
+            nvl(m.member_nickname, m.member_id) as nickname,
+            r.rating,
+            r.review_content,
+            r.review_status,
+            r.created_date,
+            r.updated_date
+        from bread_review_tbl r
+        join member_tbl m on r.member_no = m.member_no
+        where r.bread_no = #{breadNo}
+          and r.review_status = 'Y'
+        order by r.created_date desc
+    </select>
+
+    <insert id="insertReview" parameterType="breadReview">
+        insert into bread_review_tbl (
+            review_no,
+            order_no,
+            bread_no,
+            member_no,
+            rating,
+            review_content,
+            review_status,
+            created_date
+        ) values (
+            bread_review_seq.nextval,
+            #{orderNo},
+            #{breadNo},
+            #{memberNo},
+            #{rating},
+            #{reviewContent},
+            'Y',
+            sysdate
+        )
+    </insert>
+
+    <select id="existsBread" parameterType="int" resultType="int">
+        select count(*)
+        from bread_tbl
+        where bread_no = #{breadNo}
+    </select>
+
+    <select id="existsMember" parameterType="int" resultType="int">
+        select count(*)
+        from member_tbl
+        where member_no = #{memberNo}
+          and member_status = 'Y'
+    </select>
+
+    <select id="selectReviewableOrderNo" resultType="int">
+        select order_no
+        from (
+            select o.order_no
+            from order_tbl o
+            where o.bread_no = #{breadNo}
+              and o.member_no = #{memberNo}
+              and o.order_status in ('PAID', 'COMPLETED')
+              and not exists (
+                  select 1
+                  from bread_review_tbl r
+                  where r.order_no = o.order_no
+              )
+            order by o.order_date desc, o.order_no desc
+        )
+        where rownum = 1
+    </select>
+
+    <select id="selectAverageRating" parameterType="int" resultType="double">
+        select round(avg(rating), 1)
+        from bread_review_tbl
+        where bread_no = #{breadNo}
+          and review_status = 'Y'
+    </select>
+
+    <select id="selectReviewCount" parameterType="int" resultType="int">
+        select count(*)
+        from bread_review_tbl
+        where bread_no = #{breadNo}
+          and review_status = 'Y'
+    </select>
+</mapper>

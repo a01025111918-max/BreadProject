@@ -73,6 +73,8 @@
   margin: 30px auto 0;
   display: flex;
   justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .order_zone button {
@@ -86,6 +88,11 @@
 
 .order_zone button:hover {
   cursor: pointer;
+}
+
+.review_toggle_btn {
+  background-color: #fff !important;
+  color: #ff6b00 !important;
 }
 
 .order_popup_wrap {
@@ -240,6 +247,162 @@
 
 /*빵영양 상세 정보 디자인 꾸미기*/
 
+.review_section {
+  width: 80%;
+  max-width: 1000px;
+  margin: 36px auto 0;
+  padding: 34px 38px;
+  background: #fff;
+  border: 3px solid #fff1df;
+  border-radius: 28px;
+  box-shadow: 0 18px 34px rgba(112, 62, 20, 0.11);
+}
+
+.review_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.review_header h3 {
+  margin: 0;
+  font-size: 28px;
+  color: #2b211d;
+}
+
+.review_header p {
+  margin: 0;
+  color: #ff6b00;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.review_form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  margin-bottom: 24px;
+  background: #fff8ef;
+  border-radius: 20px;
+}
+
+.review_form label {
+  color: #3a281f;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.rating_box {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.rating_box button {
+  border: 0;
+  background: transparent;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.active_star {
+  color: #ffb000;
+}
+
+.empty_star {
+  color: #d9c7b7;
+}
+
+.review_form textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 16px;
+  border: 2px solid #f0dcc7;
+  border-radius: 16px;
+  resize: vertical;
+  outline: none;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.review_form textarea:focus {
+  border-color: #ff8a24;
+  box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.13);
+}
+
+.review_submit_btn {
+  width: 150px;
+  height: 46px;
+  border: 0;
+  border-radius: 14px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.empty_review_box {
+  padding: 28px;
+  text-align: center;
+  background: #fffaf5;
+  border-radius: 20px;
+  color: #6b5548;
+}
+
+.empty_review_box p {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.empty_review_box span {
+  font-size: 15px;
+}
+
+.review_card {
+  padding: 22px 24px;
+  border: 1px solid #f1dfcc;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.review_card + .review_card {
+  margin-top: 14px;
+}
+
+.review_card_header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.review_card_header strong {
+  color: #2b211d;
+  font-size: 17px;
+}
+
+.review_card_header span {
+  color: #ff6b00;
+  font-weight: 800;
+}
+
+.review_card p {
+  margin: 0 0 12px;
+  color: #4a3025;
+  line-height: 1.7;
+}
+
+.review_card time {
+  color: #9b8575;
+  font-size: 14px;
+}
+
 .bread_detail_info_box {
   width: 80%;
   margin: 40px auto;
@@ -278,4 +441,33 @@
   padding: 14px 18px;
   background-color: #f7f7f7;
   border-radius: 12px;
+}
+
+.registered_review_section {
+  width: 80%;
+  margin: 40px auto;
+  padding: 35px 45px;
+  background-color: #fff;
+  border-radius: 24px;
+}
+
+.registered_review_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.registered_review_header h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #2b211d;
+}
+
+.registered_review_header p {
+  margin: 0;
+  color: #ff6b00;
+  font-size: 18px;
+  font-weight: 800;
 }
