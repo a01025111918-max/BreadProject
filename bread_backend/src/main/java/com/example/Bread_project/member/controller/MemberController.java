@@ -74,11 +74,35 @@ public class MemberController {
                 m.getMemberNickname()
         );
         return ResponseEntity.ok(res);
+    }
+    
+    // 재토큰을 받아 로그인 연장 구현 로직
+    @PostMapping(value = "/refresh")
+    public ResponseEntity<?> refreshToken(
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("토큰이 없습니다.");
+        }
 
+        String token = authorization.replace("Bearer ", "");
+        LoginMember m = memberService.refreshToken(token);
 
+        if (m == null) {
+            return ResponseEntity.status(401).body("토큰 연장에 실패했습니다.");
+        }
 
+        MemberResponse res = new MemberResponse(
+                m.getMemberId(),
+                m.getMemberName(),
+                m.getMemberRole(),
+                m.getToken(),
+                m.getEndTime(),
+                m.getMemberNo(),
+                m.getMemberNickname()
+        );
 
-
+        return ResponseEntity.ok(res);
     }
 
 

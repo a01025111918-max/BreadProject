@@ -29,7 +29,7 @@ const Header = () => {
       <nav className={styles.header_inner}>
         <ul className={styles.header_menu}>
           <li>
-            <Link to="/">SEASON</Link>
+            <Link to="/season">SEASON</Link>
           </li>
           <li>
             <Link to="/">BRAND</Link>

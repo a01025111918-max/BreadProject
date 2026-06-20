@@ -37,6 +37,7 @@ const Main = () => {
   const navigate = useNavigate();
   const [breadList, setBreadList] = useState([]);
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [currentBreadIndex, setCurrentBreadIndex] = useState(0);
 
   useEffect(() => {
     axios
@@ -59,6 +60,20 @@ const Main = () => {
 
   const banner = bannerList[currentBanner];
 
+  // 이전 화살표를 누르면 현재 카드 번호를 하나 줄이고, 첫 카드에서는 마지막 카드로 이동
+  const handlePrevBread = () => {
+    setCurrentBreadIndex((prev) =>
+      prev === 0 ? breadList.length - 1 : prev - 1,
+    );
+  };
+
+  // 다음 화살표를 누르면 현재 카드 번호를 하나 늘리고, 마지막 카드에서는 첫 카드로 이동
+  const handleNextBread = () => {
+    setCurrentBreadIndex((prev) =>
+      prev === breadList.length - 1 ? 0 : prev + 1,
+    );
+  };
+
   return (
     <main className={styles.total_main_wrap}>
       <section className={`${styles.hero_banner} ${styles[banner.theme]}`}>
@@ -70,10 +85,15 @@ const Main = () => {
             type="button"
             className={styles.banner_button}
             onClick={() => {
+              if (banner.theme === "redbean") {
+                navigate("/season");
+                return;
+              }
+
               const targetBread = breadList.find((breadItem) =>
-                breadItem.breadName?.replaceAll(" ", "").includes(
-                  banner.label.replaceAll(" ", ""),
-                ),
+                breadItem.breadName
+                  ?.replaceAll(" ", "")
+                  .includes(banner.label.replaceAll(" ", "")),
               );
 
               if (targetBread) {
@@ -109,30 +129,60 @@ const Main = () => {
           <p>오늘 준비된 달콤하고 따뜻한 빵을 만나보세요.</p>
         </div>
 
-        <div className={styles.main_card_wrap}>
-          {breadList.map((bread) => (
-            <article
-              className={styles.main_card}
-              key={bread.breadNo}
-              onClick={() => navigate(`/breads/${bread.breadNo}`)}
+        <div className={styles.bread_slider_wrap}>
+          <button
+            type="button"
+            className={styles.slider_arrow}
+            onClick={handlePrevBread}
+            disabled={breadList.length === 0}
+            aria-label="이전 빵 보기"
+          >
+            &lt;
+          </button>
+
+          <div className={styles.slider_view}>
+            <div
+              className={styles.main_card_wrap}
+              style={{
+                // currentBreadIndex 값만큼 카드 묶음을 왼쪽으로 이동
+                transform: `translateX(-${currentBreadIndex * 100}%)`,
+              }}
             >
-              <div className={styles.card_img_box}>
-                <img
-                  className={styles.bread_img}
-                  src={`${import.meta.env.VITE_BACKSERVER}/${bread.breadThumb}`}
-                  alt={bread.breadName}
-                />
-              </div>
-              <div className={styles.card_content}>
-                <span className={styles.card_category}>
-                  {bread.breadCategory}
-                </span>
-                <h3>{bread.breadName}</h3>
-                <p>{bread.breadContent}</p>
-                <strong>{bread.breadPrice?.toLocaleString()}원</strong>
-              </div>
-            </article>
-          ))}
+              {breadList.map((bread) => (
+                <article
+                  className={styles.main_card}
+                  key={bread.breadNo}
+                  onClick={() => navigate(`/breads/${bread.breadNo}`)}
+                >
+                  <div className={styles.card_img_box}>
+                    <img
+                      className={styles.bread_img}
+                      src={`${import.meta.env.VITE_BACKSERVER}/${bread.breadThumb}`}
+                      alt={bread.breadName}
+                    />
+                  </div>
+                  <div className={styles.card_content}>
+                    <span className={styles.card_category}>
+                      {bread.breadCategory}
+                    </span>
+                    <h3>{bread.breadName}</h3>
+                    <p>{bread.breadContent}</p>
+                    <strong>{bread.breadPrice?.toLocaleString()}원</strong>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className={styles.slider_arrow}
+            onClick={handleNextBread}
+            disabled={breadList.length === 0}
+            aria-label="다음 빵 보기"
+          >
+            &gt;
+          </button>
         </div>
       </section>
     </main>

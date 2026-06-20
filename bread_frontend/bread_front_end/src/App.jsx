@@ -7,6 +7,7 @@ import Main from "./page/Main";
 import JoinPage from "./page/JoinPage";
 import LoginPage from "./page/LoginPage";
 import SubBreadPage from "./page/SubBreadPage";
+import SeasonPage from "./page/SeasonPage";
 import FindIdPage from "./page/FindIdPage";
 import FindPwPage from "./page/FindPwPage";
 import ResetPw from "./page/ResetPw";
@@ -71,6 +72,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/season" element={<SeasonPage />} />
         <Route path="/members/join" element={<JoinPage />} />
         <Route path="/members/login" element={<LoginPage />} />
         <Route path="/breads/:breadNo" element={<SubBreadPage />} />

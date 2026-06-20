@@ -48,6 +48,27 @@ private JwtUtils jwtUtils;
 
     return null;
 }
+    // 재토큰을 받아 로그인 연장 구현 로직
+    public LoginMember refreshToken(String token) {
+        LoginMember loginMember = jwtUtils.cheakToken(token);
+
+        if (loginMember == null) {
+            return null;
+        }
+
+        Member member = memberDao.selectOneMemberByNo(loginMember.getMemberNo());
+
+        if (member == null || !"Y".equals(member.getMemberStatus())) {
+            return null;
+        }
+
+        return jwtUtils.createToken(
+                member.getMemberNo(),
+                member.getMemberId(),
+                member.getMemberNickname(),
+                member.getMemberRole()
+        );
+    }
 
     public Member selectOneMemberByNo(Integer memberNo) {
         Member member = memberDao.selectOneMemberByNo(memberNo);

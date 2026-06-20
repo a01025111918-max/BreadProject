@@ -1,9 +1,16 @@
+import axios from "axios";
+import Swal from "sweetalert2";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+let alertTimer = null;
+let logoutTimer = null;
+
+const FIVE_MINUTES = 5 * 60 * 1000;
+
 const useAuthStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       memberNo: null,
       memberId: null,
       memberNickname: null,
@@ -13,6 +20,19 @@ const useAuthStore = create(
       token: null,
       endTime: null,
       isReady: false,
+
+      stopLoginTimer: () => {
+        if (alertTimer) {
+          clearTimeout(alertTimer);
+          alertTimer = null;
+        }
+
+        if (logoutTimer) {
+          clearTimeout(logoutTimer);
+          logoutTimer = null;
+        }
+      },
+
       login: ({
         memberNo,
         memberId,
@@ -33,8 +53,45 @@ const useAuthStore = create(
           token,
           endTime,
         });
+
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        get().startLoginTimer(endTime);
       },
+
+      updateToken: (newToken, newEndTime) => {
+        get().stopLoginTimer();
+
+        set({
+          token: newToken,
+          endTime: newEndTime,
+        });
+
+        axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+        get().startLoginTimer(newEndTime);
+      },
+
+      confirmLogout: async () => {
+        const result = await Swal.fire({
+          title: "로그아웃 하시겠습니까?",
+          text: "지금 나가시면 다시 로그인해야 합니다.",
+          icon: "warning",
+          confirmButtonText: "로그아웃",
+          confirmButtonColor: "red",
+          showCancelButton: true,
+          cancelButtonText: "아니오",
+          cancelButtonColor: "green",
+        });
+
+        if (!result.isConfirmed) {
+          return;
+        }
+
+        get().logout();
+      },
+
       logout: () => {
+        get().stopLoginTimer();
+
         set({
           memberNo: null,
           memberId: null,
@@ -44,14 +101,83 @@ const useAuthStore = create(
           memberStatus: null,
           token: null,
           endTime: null,
+          isReady: true,
         });
+
+        delete axios.defaults.headers.common["Authorization"];
+        localStorage.removeItem("auth-key");
       },
-      //thumb만 수정 로직을 따로 짜는 이유.
-      //-> 왜냐하면 이미지는 자주 수정하기 버튼을 누를 수 있는데
-      //-> 문제는 기존 로그인 로직에서는 한번에 전체 수정이 이루어지게 된다는 점
-      //-> 이미지만 바꾸면 되는데 전체까지 건들이게 되면 귀찮고 나중에 유지보수가
-      //-> 지옥이 될 가능성이 높기 떄문에, 이미지만 따로 부분 수정이 가능하게 셋팅하는 것이다.
-      //-> 그 뒤에 있는 상태와 닉네임도 마찬가지다. 자주 바뀔 것 같은 요소들은 이렇게 미리 부분 수정 셋팅을 만들어두는게 좋다
+
+      startLoginTimer: (endTime) => {
+        if (!endTime) return;
+
+        get().stopLoginTimer();
+
+        const remainingTime = Number(endTime) - Date.now();
+
+        if (remainingTime <= 0) {
+          get().logout();
+          return;
+        }
+
+        const alertDelay = Math.max(remainingTime - FIVE_MINUTES, 0);
+
+        alertTimer = setTimeout(() => {
+          if (!get().token) return;
+
+          Swal.fire({
+            title: "로그인 연장하시겠습니까?",
+            text: "로그인 시간이 5분 후에 만료됩니다.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "예",
+            cancelButtonText: "아니오",
+            confirmButtonColor: "#ff6b00",
+            cancelButtonColor: "#777",
+          }).then((result) => {
+            if (!result.isConfirmed) {
+              return;
+            }
+
+            axios
+              .post(`${import.meta.env.VITE_BACKSERVER}/members/refresh`)
+              .then((res) => {
+                get().updateToken(res.data.token, res.data.endTime);
+
+                Swal.fire({
+                  title: "로그인이 연장되었습니다.",
+                  text: "다시 1시간 동안 이용할 수 있습니다.",
+                  icon: "success",
+                  confirmButtonColor: "#ff6b00",
+                });
+              })
+              .catch(() => {
+                get().logout();
+
+                Swal.fire({
+                  title: "로그인 연장에 실패했습니다.",
+                  text: "다시 로그인해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#ff6b00",
+                });
+              });
+          });
+        }, alertDelay);
+
+        logoutTimer = setTimeout(() => {
+          if (!get().token) return;
+
+          Swal.close();
+          get().logout();
+
+          Swal.fire({
+            title: "로그인 시간이 만료되었습니다.",
+            text: "자동 로그아웃되었습니다.",
+            icon: "warning",
+            confirmButtonColor: "#ff6b00",
+          });
+        }, remainingTime);
+      },
 
       setThumb: (thumb) => {
         set({ memberThumb: thumb });
@@ -72,11 +198,6 @@ const useAuthStore = create(
     {
       name: "auth-key",
       storage: createJSONStorage(() => localStorage),
-
-      //디버깅용
-      onRehydrateStorage: () => (state) => {
-        console.log("로컬 스토리지에서 데이터를 불러왔습니다:", state);
-      },
       partialize: (state) => {
         return {
           memberId: state.memberId,
@@ -88,6 +209,17 @@ const useAuthStore = create(
           token: state.token,
           endTime: state.endTime,
         };
+      },
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        state.setReady(true);
+
+        if (state.token) {
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${state.token}`;
+          state.startLoginTimer(state.endTime);
+        }
       },
     },
   ),

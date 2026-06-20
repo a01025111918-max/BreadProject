@@ -1,11 +1,11 @@
-import styles from "./SubBreadPage.module.css";
+﻿import styles from "./SubBreadPage.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import useAuthStore from "../authstore/useAuthStore";
 
-const OrderPopup = ({ isOpen, onClose, breadDetail }) => {
+const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
   const [count, setCount] = useState(1);
   const memberNo = useAuthStore((state) => state.memberNo);
 
@@ -49,14 +49,13 @@ const OrderPopup = ({ isOpen, onClose, breadDetail }) => {
           icon: "success",
         });
         setCount(1);
+        onOrderSuccess();
         onClose();
       })
       .catch((err) => {
-        console.log("상태코드:", err.response?.status);
-        console.log("서버응답:", err.response?.data);
         Swal.fire({
           title: "주문에 실패했습니다.",
-          text: err.response?.data || "잔액 또는 재고를 확인해주세요.",
+          text: err.response?.data || "수량 또는 재고를 확인해주세요.",
           icon: "warning",
         });
       });
@@ -78,7 +77,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail }) => {
         <input
           type="number"
           max={breadDetail.breadStock}
-          min="1"
+          min="10"
           value={count}
           onChange={(e) => setCount(Number(e.target.value))}
           className={styles.count_input}
@@ -138,6 +137,11 @@ const SubBreadPage = () => {
   const [reviewCount, setReviewCount] = useState(0);
   const [selectedRating, setSelectedRating] = useState(0);
   const [reviewContent, setReviewContent] = useState("");
+  const [canWriteReview, setCanWriteReview] = useState(false);
+  const [editingReviewNo, setEditingReviewNo] = useState(null);
+  const [editRating, setEditRating] = useState(0);
+  const [editContent, setEditContent] = useState("");
+  const [deleteReview, setDeleteReview] = useState(null);
 
   const fetchReviews = () => {
     axios
@@ -146,12 +150,14 @@ const SubBreadPage = () => {
         setReviews(res.data.reviews || []);
         setAverageRating(res.data.averageRating || 0);
         setReviewCount(res.data.reviewCount || 0);
+        setCanWriteReview(res.data.canWriteReview || false);
       })
       .catch((err) => {
         console.log("리뷰 조회 실패:", err);
         setReviews([]);
         setAverageRating(0);
         setReviewCount(0);
+        setCanWriteReview(false);
       });
   };
 
@@ -186,6 +192,34 @@ const SubBreadPage = () => {
     }
 
     setIsOpen(true);
+  };
+
+  const handleReviewToggle = () => {
+    if (showReviews) {
+      setShowReviews(false);
+      return;
+    }
+
+    if (!token) {
+      Swal.fire({
+        title: "로그인이 필요합니다.",
+        text: "후기 등록을 하려면 먼저 로그인해주세요.",
+        icon: "warning",
+      }).then(() => {
+        navigate("/members/login");
+      });
+      return;
+    }
+
+    if (!canWriteReview) {
+      Swal.fire({
+        title: "먼저 주문하셔야 후기등록을 하실 수 있습니다.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    setShowReviews(true);
   };
 
   const handleReviewSubmit = (e) => {
@@ -243,7 +277,7 @@ const SubBreadPage = () => {
 
         setSelectedRating(0);
         setReviewContent("");
-        setShowReviews(true);
+        setShowReviews(false);
         fetchReviews();
       })
       .catch((err) => {
@@ -256,11 +290,71 @@ const SubBreadPage = () => {
       });
   };
 
+  const handleEditClick = (review) => {
+    setEditingReviewNo(review.reviewNo);
+    setEditRating(review.rating);
+    setEditContent(review.reviewContent);
+  };
+
+  const handleEditCancel = () => {
+    setEditingReviewNo(null);
+    setEditRating(0);
+    setEditContent("");
+  };
+
+  const handleReviewUpdate = (e, reviewNo) => {
+    e.preventDefault();
+
+    if (editRating === 0) {
+      Swal.fire({
+        title: "별점을 선택해주세요.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    if (!editContent.trim()) {
+      Swal.fire({
+        title: "후기 내용을 입력해주세요.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    axios
+      .patch(
+        `${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/reviews/${reviewNo}`,
+        {
+          memberNo: memberNo,
+          rating: editRating,
+          reviewContent: editContent,
+        },
+      )
+      .then((res) => {
+        console.log("후기 수정 성공:", res.data);
+
+        Swal.fire({
+          title: "후기가 수정되었습니다.",
+          icon: "success",
+        });
+
+        handleEditCancel();
+        fetchReviews();
+      })
+      .catch((err) => {
+        console.log("후기 수정 실패:", err);
+        Swal.fire({
+          title: "후기 수정 실패",
+          text: err.response?.data || "잠시 후 다시 시도해주세요.",
+          icon: "error",
+        });
+      });
+  };
+
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}`)
       .then((res) => {
-        console.log(res.data);
         setBreadDetail(res.data);
       })
       .catch((err) => {
@@ -272,7 +366,6 @@ const SubBreadPage = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/nutrition`)
       .then((res) => {
-        console.log("빵 영양 상세 정보:", res.data);
         if (typeof res.data === "string") {
           setBreadNutrition(null);
           return;
@@ -288,6 +381,57 @@ const SubBreadPage = () => {
   useEffect(() => {
     fetchReviews();
   }, [breadNo]);
+
+  // 후기 삭제 로직
+  const handleDeleteReview = (reviewNo) => {
+    Swal.fire({
+      title: "정말 삭제하시겠습니까?",
+      text: "삭제한 후기는 다시 되돌릴 수 없습니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+      confirmButtonColor: "#d83a2e",
+      cancelButtonColor: "#777",
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      setDeleteReview(reviewNo);
+
+      axios
+        .delete(
+          `${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/reviews/${reviewNo}`,
+        )
+        .then((res) => {
+          console.log("후기 삭제 성공:", res.data);
+
+          Swal.fire({
+            title: "후기가 삭제되었습니다.",
+            icon: "success",
+          });
+
+          if (editingReviewNo === reviewNo) {
+            handleEditCancel();
+          }
+
+          fetchReviews();
+        })
+        .catch((err) => {
+          console.log("후기 삭제 실패:", err);
+
+          Swal.fire({
+            title: "후기 삭제 실패",
+            text: err.response?.data || "잠시 후 다시 시도해주세요.",
+            icon: "error",
+          });
+        })
+        .finally(() => {
+          setDeleteReview(null);
+        });
+    });
+  };
 
   return (
     <div className={styles.sub_bread_page_wrap}>
@@ -321,23 +465,19 @@ const SubBreadPage = () => {
         <button
           type="button"
           className={styles.review_toggle_btn}
-          onClick={() => setShowReviews(!showReviews)}
+          onClick={handleReviewToggle}
         >
-          {reviewCount === 0
-            ? "후기 없음"
-            : showReviews
-              ? "후기 접기"
-              : `후기 ${reviewCount}개 보기`}
+          {showReviews ? "후기 등록 닫기" : "후기 등록"}
         </button>
       </div>
 
-      {/*후기등록 버튼을 누르면 열리는 일종의 팝업창 */}
       <OrderPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         breadDetail={breadDetail}
+        onOrderSuccess={fetchReviews}
       />
-      {/*그 팝업창에 담겨 있는 내용 */}
+
       {showReviews && (
         <div className={styles.review_section}>
           <div className={styles.review_header}>
@@ -419,7 +559,6 @@ const SubBreadPage = () => {
         )}
       </div>
 
-      {/*위에서 등록한 후기글이 여기 아래에서 화면에서 표현 */}
       <div className={styles.registered_review_section}>
         <div className={styles.registered_review_header}>
           <h2>등록된 후기글</h2>
@@ -435,16 +574,88 @@ const SubBreadPage = () => {
         ) : (
           reviews.map((review) => (
             <div className={styles.review_card} key={review.reviewNo}>
-              <div className={styles.review_card_header}>
-                <strong>{review.nickname}</strong>
-                <span>⭐ {review.rating}</span>
-              </div>
-              <p>{review.reviewContent}</p>
-              <time>
-                {review.createdDate
-                  ? new Date(review.createdDate).toLocaleDateString()
-                  : ""}
-              </time>
+              {editingReviewNo === review.reviewNo ? (
+                <form
+                  className={styles.review_edit_form}
+                  onSubmit={(e) => handleReviewUpdate(e, review.reviewNo)}
+                >
+                  <div className={styles.review_card_header}>
+                    <strong>{review.nickname}</strong>
+                    <span>수정 중</span>
+                  </div>
+
+                  <label>별점</label>
+                  <div className={styles.rating_box}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        className={
+                          star <= editRating
+                            ? styles.active_star
+                            : styles.empty_star
+                        }
+                        onClick={() => setEditRating(star)}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+
+                  <label htmlFor={`editContent-${review.reviewNo}`}>
+                    후기 내용
+                  </label>
+                  <textarea
+                    id={`editContent-${review.reviewNo}`}
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                  />
+
+                  <div className={styles.review_edit_actions}>
+                    <button type="submit">저장</button>
+                    <button type="button" onClick={handleEditCancel}>
+                      취소
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <div className={styles.review_card_header}>
+                    <strong>{review.nickname}</strong>
+                    <span>⭐ {review.rating}</span>
+                  </div>
+                  <p>{review.reviewContent}</p>
+                  <div className={styles.review_card_bottom}>
+                    <time>
+                      {review.createdDate
+                        ? new Date(review.createdDate).toLocaleDateString()
+                        : ""}
+                    </time>
+
+                    {Number(review.memberNo) === Number(memberNo) && (
+                      <div className={styles.review_action_buttons}>
+                        <button
+                          type="button"
+                          className={styles.review_edit_btn}
+                          onClick={() => handleEditClick(review)}
+                        >
+                          수정하기
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.review_delete_btn}
+                          onClick={() => handleDeleteReview(review.reviewNo)}
+                          disabled={deleteReview === review.reviewNo}
+                        >
+                          {deleteReview === review.reviewNo
+                            ? "삭제 중"
+                            : "삭제하기"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           ))
         )}

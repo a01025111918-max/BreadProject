@@ -1,0 +1,325 @@
+.season_page_wrap {
+  min-height: 100vh;
+  padding-bottom: 90px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 0, 0.13), transparent 30%),
+    linear-gradient(180deg, #fff4e6 0%, #fffaf3 48%, #fff7ef 100%);
+}
+
+.season_hero {
+  width: min(94%, 1240px);
+  margin: 0 auto;
+  padding: 86px 70px;
+  border: 8px solid #ff7600;
+  border-top: 0;
+  border-radius: 0 0 58px 58px;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.24)),
+    linear-gradient(135deg, #fff1da 0%, #ffd38f 50%, #f47b00 100%);
+  box-shadow: 0 18px 32px rgba(130, 63, 0, 0.18);
+}
+
+.season_hero_text {
+  max-width: 760px;
+}
+
+.season_hero_text span,
+.section_title_box span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #3a251c;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.season_hero_text h1 {
+  margin: 24px 0 18px;
+  color: #2b1912;
+  font-size: 54px;
+  line-height: 1.12;
+  font-weight: 900;
+}
+
+.season_hero_text p {
+  color: #4a3025;
+  font-size: 20px;
+  line-height: 1.75;
+  font-weight: 600;
+}
+
+.season_content {
+  width: min(92%, 1180px);
+  margin: 74px auto 0;
+}
+
+.section_title_box {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.section_title_box span {
+  background: #ff6b00;
+}
+
+.section_title_box h2 {
+  margin-top: 12px;
+  color: #2b1912;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.season_card_list {
+  display: grid;
+  gap: 30px;
+}
+
+.season_card {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(340px, 1.2fr);
+  overflow: hidden;
+  border: 3px solid #fff1df;
+  border-radius: 32px;
+  background: #fff;
+  box-shadow: 0 18px 34px rgba(112, 62, 20, 0.13);
+}
+
+.season_img_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 390px;
+  padding: 46px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 60%),
+    linear-gradient(135deg, #fff4e6 0%, #ffd7a8 100%);
+}
+
+.season_img_box img {
+  width: min(100%, 390px);
+  height: 300px;
+  object-fit: contain;
+}
+
+.season_card_info {
+  padding: 56px 58px;
+}
+
+.season_card_info > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #fff0df;
+  color: #b04b00;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.season_card_info h3 {
+  margin: 18px 0 16px;
+  color: #2b211d;
+  font-size: 38px;
+  font-weight: 900;
+}
+
+.season_card_info p {
+  color: #5f4a3f;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.period_box {
+  margin: 22px 0 16px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: #fff7ed;
+  color: #3a251c;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.season_card_info strong {
+  display: block;
+  color: #ff6b00;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.recommend_text {
+  margin-top: 18px;
+  font-weight: 700;
+}
+
+.action_box {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.detail_btn,
+.order_btn {
+  min-width: 148px;
+  height: 54px;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.detail_btn {
+  border: 2px solid #ff6b00;
+  background: #fff;
+  color: #ff6b00;
+}
+
+.order_btn {
+  border: 2px solid #2b211d;
+  background: #ff6b00;
+  color: #fff;
+}
+
+.order_btn:hover {
+  background: #f06f00;
+}
+
+.order_popup_wrap {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.order_overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.order_container {
+  width: 360px;
+  position: relative;
+  z-index: 1000;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.order_container h2 {
+  margin-bottom: 28px;
+  color: #222;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.info_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info_box p:first-child {
+  color: #222;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.info_box p:last-child {
+  color: #111;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.count_input {
+  width: 100%;
+  height: 52px;
+  padding: 0 14px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  font-size: 18px;
+  outline: none;
+}
+
+.count_input:focus {
+  border-color: #ff7a00;
+}
+
+.total_price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  color: #777;
+  font-size: 16px;
+}
+
+.total_price span {
+  color: #ff5a00;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.buy_btn {
+  width: 100%;
+  height: 54px;
+  margin-bottom: 12px;
+  border: none;
+  border-radius: 16px;
+  background-color: #ff7a00;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.buy_btn:hover {
+  background-color: #f06f00;
+}
+
+.close_btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 16px;
+  background-color: #f3f3f3;
+  color: #666;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.close_btn:hover {
+  background-color: #e8e8e8;
+}
+
+@media (max-width: 820px) {
+  .season_hero {
+    padding: 62px 30px;
+  }
+
+  .season_hero_text h1 {
+    font-size: 40px;
+  }
+
+  .season_card {
+    grid-template-columns: 1fr;
+  }
+
+  .season_card_info {
+    padding: 38px 30px;
+  }
+}

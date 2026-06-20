@@ -184,14 +184,60 @@
   font-size: 18px;
 }
 
-.main_card_wrap {
+.bread_slider_wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 28px;
+  grid-template-columns: 68px minmax(0, 520px) 68px;
   justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+
+.slider_view {
+  overflow: hidden;
+  border-radius: 28px;
+}
+
+.main_card_wrap {
+  display: flex;
+  transition: transform 0.45s ease;
+}
+
+.slider_arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  padding: 0 0 4px;
+  border: 3px solid #ffb266;
+  border-radius: 50%;
+  background: #fff;
+  color: #ff6b00;
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 900;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(112, 62, 20, 0.13);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.slider_arrow:hover:not(:disabled) {
+  transform: translateY(-3px);
+  background: #ff6b00;
+  color: #fff;
+}
+
+.slider_arrow:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .main_card {
+  flex: 0 0 100%;
   overflow: hidden;
   border: 3px solid #fff1df;
   border-radius: 28px;
@@ -218,6 +264,13 @@
   background:
     radial-gradient(circle, rgba(255, 116, 0, 0.12), transparent 58%),
     #fff7ed;
+  transition: background 0.22s ease;
+}
+
+.main_card:hover .card_img_box {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.42), transparent 60%),
+    linear-gradient(135deg, #ffb266 0%, #ff7a00 100%);
 }
 
 .bread_img {
@@ -298,8 +351,18 @@
   }
 
   .main_card_wrap {
-    grid-template-columns: minmax(0, 392px);
-    justify-content: center;
+    display: flex;
+  }
+
+  .bread_slider_wrap {
+    grid-template-columns: 56px minmax(0, 430px) 56px;
+    gap: 18px;
+  }
+
+  .slider_arrow {
+    width: 54px;
+    height: 54px;
+    font-size: 28px;
   }
 }
 
@@ -323,6 +386,18 @@
   }
 
   .main_card_wrap {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+  }
+
+  .bread_slider_wrap {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    gap: 10px;
+  }
+
+  .slider_arrow {
+    width: 42px;
+    height: 42px;
+    border-width: 2px;
+    font-size: 22px;
   }
 }
