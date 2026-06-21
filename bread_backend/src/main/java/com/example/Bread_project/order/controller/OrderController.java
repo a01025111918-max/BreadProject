@@ -1,12 +1,14 @@
 package com.example.Bread_project.order.controller;
 
-
 import com.example.Bread_project.order.model.service.OrderService;
 import com.example.Bread_project.order.model.vo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
 @RestController
@@ -16,17 +18,19 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<?> orderMember(@RequestBody Order order ) {
-        System.out.println("주문 요청 도착");
-        //계좌 잔액 차감, 즉 update로직.
-        int result = orderService.payOrder(order);
-        System.out.println("result = " + result);
+    public ResponseEntity<?> orderMember(@RequestBody Order order) {
+        try {
+            int result = orderService.payOrder(order);
 
-        if (result > 0) {
-            return ResponseEntity.ok("결제 성공");
-        } else {
+            if (result > 0) {
+                return ResponseEntity.ok("\uC8FC\uBB38 \uC131\uACF5");
+            }
+
             return ResponseEntity.badRequest()
-                    .body("잔액 부족");
+                    .body("\uC8FC\uBB38\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
         }
     }
 }

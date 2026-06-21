@@ -1,4 +1,4 @@
-﻿import styles from "./SubBreadPage.module.css";
+import styles from "./SubBreadPage.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -6,11 +6,53 @@ import Swal from "sweetalert2";
 import useAuthStore from "../authstore/useAuthStore";
 
 const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
-  const [count, setCount] = useState(1);
+  // B2B 납품 주문 기준값: 최소 10개부터 주문 가능하고, 1박스는 10개로 계산한다.
+  const MIN_ORDER_COUNT = 10;
+  const BOX_COUNT = 10;
+
+  // count에는 실제 주문 개수를 저장한다. 박스 단위를 선택해도 10, 20처럼 개수로 저장된다.
+  const [count, setCount] = useState(MIN_ORDER_COUNT);
+  const [orderUnit, setOrderUnit] = useState("piece");
   const memberNo = useAuthStore((state) => state.memberNo);
+
+  // 현재 재고가 최소 주문 수량보다 적으면 주문 버튼을 비활성화한다.
+  const stock = Number(breadDetail.breadStock) || 0;
+  const canOrder = stock >= MIN_ORDER_COUNT;
+
+  // 사용자가 입력한 수량을 최소 수량, 현재 재고, 선택한 납품 단위에 맞게 보정한다.
+  const getValidCount = (value, unit = orderUnit) => {
+    let nextCount = Number(value) || MIN_ORDER_COUNT;
+    nextCount = Math.max(nextCount, MIN_ORDER_COUNT);
+
+    if (stock > 0) {
+      nextCount = Math.min(nextCount, stock);
+    }
+
+    if (unit === "box") {
+      nextCount = Math.ceil(nextCount / BOX_COUNT) * BOX_COUNT;
+
+      if (stock > 0 && nextCount > stock) {
+        nextCount = Math.floor(stock / BOX_COUNT) * BOX_COUNT;
+      }
+
+      nextCount = Math.max(nextCount, MIN_ORDER_COUNT);
+    }
+
+    return nextCount;
+  };
+
+  // 납품 단위를 바꾸면 기존 수량도 해당 단위 기준에 맞게 다시 계산한다.
+  const handleUnitChange = (unit) => {
+    setOrderUnit(unit);
+    setCount((prev) => getValidCount(prev, unit));
+  };
 
   useEffect(() => {
     if (!isOpen) return;
+
+    // 팝업을 새로 열 때마다 기본값은 개별 주문 10개로 초기화한다.
+    setCount(MIN_ORDER_COUNT);
+    setOrderUnit("piece");
 
     const handleEsc = (e) => {
       if (e.key === "Escape") {
@@ -36,6 +78,26 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
       return;
     }
 
+    // 재고가 10개 미만이면 B2B 최소 주문 조건을 만족하지 못하므로 주문을 막는다.
+    if (!canOrder) {
+      Swal.fire({
+        title: "주문 가능 수량이 부족합니다.",
+        text: "B2B 납품 주문은 최소 10개부터 가능합니다.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    // 프론트 조작이나 잘못된 입력으로 최소 수량/재고 범위를 벗어난 경우 한 번 더 막는다.
+    if (count < MIN_ORDER_COUNT || count > stock) {
+      Swal.fire({
+        title: "수량을 확인해주세요.",
+        text: `주문 수량은 ${MIN_ORDER_COUNT}개 이상, 현재 재고 이하로 선택해주세요.`,
+        icon: "warning",
+      });
+      return;
+    }
+
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/orders`, {
         memberNo: memberNo,
@@ -45,10 +107,10 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
       .then((res) => {
         console.log(res.data);
         Swal.fire({
-          title: "구매 완료!",
+          title: "주문 완료!",
           icon: "success",
         });
-        setCount(1);
+        setCount(MIN_ORDER_COUNT);
         onOrderSuccess();
         onClose();
       })
@@ -74,14 +136,45 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
           <p>{breadDetail.breadPrice?.toLocaleString()}원</p>
         </div>
 
+        <div className={styles.order_unit_box}>
+          <p>납품 단위</p>
+          <div className={styles.unit_buttons}>
+            <button
+              type="button"
+              className={orderUnit === "piece" ? styles.active_unit : ""}
+              onClick={() => handleUnitChange("piece")}
+            >
+              개별
+            </button>
+            <button
+              type="button"
+              className={orderUnit === "box" ? styles.active_unit : ""}
+              onClick={() => handleUnitChange("box")}
+            >
+              박스
+            </button>
+          </div>
+          <span>1박스 = 10개</span>
+        </div>
+
+        <label className={styles.count_label} htmlFor="orderCount">
+          주문 수량
+        </label>
         <input
+          id="orderCount"
           type="number"
           max={breadDetail.breadStock}
-          min="10"
+          min={MIN_ORDER_COUNT}
+          step={orderUnit === "box" ? BOX_COUNT : 1}
           value={count}
-          onChange={(e) => setCount(Number(e.target.value))}
+          onChange={(e) => setCount(getValidCount(e.target.value))}
+          onBlur={(e) => setCount(getValidCount(e.target.value))}
           className={styles.count_input}
+          disabled={!canOrder}
         />
+        <p className={styles.min_order_text}>
+          최소 구매 단위는 10개부터 입니다.
+        </p>
 
         <div className={styles.total_price}>
           총 금액:
@@ -90,13 +183,14 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
 
         <button
           className={styles.buy_btn}
+          disabled={!canOrder}
           onClick={() => {
             Swal.fire({
-              title: "정말 구매하시겠습니까?",
-              text: `${count}개를 구매합니다.`,
+              title: "정말 주문하시겠습니까?",
+              text: `${count}개를 주문합니다.`,
               icon: "question",
               showCancelButton: true,
-              confirmButtonText: "구매",
+              confirmButtonText: "주문",
               cancelButtonText: "취소",
             }).then((result) => {
               if (result.isConfirmed) {
@@ -105,7 +199,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
             });
           }}
         >
-          구매하기
+          주문하기
         </button>
 
         <button className={styles.close_btn} onClick={onClose}>

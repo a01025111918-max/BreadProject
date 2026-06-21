@@ -1,4 +1,5 @@
 package com.example.Bread_project.member.model.service;
+
 import com.example.Bread_project.member.model.dao.MemberDao;
 import com.example.Bread_project.member.model.vo.LoginMember;
 import com.example.Bread_project.member.model.vo.Member;
@@ -9,22 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-@Autowired
- private MemberDao memberDao;
+    @Autowired
+    private MemberDao memberDao;
 
-@Autowired
-private BCryptPasswordEncoder bcrypt;
+    @Autowired
+    private BCryptPasswordEncoder bcrypt;
 
-@Autowired
-private JwtUtils jwtUtils;
+    @Autowired
+    private JwtUtils jwtUtils;
 
 
-//회원 등록
+    //회원 등록
     public int insertJoin(Member member) {
         //회원가입할 때 비밀번호 암호화 등록
         String memberPw = member.getMemberPw();
         String encPw = bcrypt.encode(memberPw);
-        System.out.println("memberPw:"+encPw);
+        System.out.println("memberPw:" + encPw);
         member.setMemberPw(encPw);
         int result = memberDao.insertJoin(member);
         return result;
@@ -33,21 +34,22 @@ private JwtUtils jwtUtils;
     //로그인 로직 
     public LoginMember selectOneMember(Member member) {
         Member loginMember = memberDao.selectOneMember(member.getMemberId());
-        System.out.println("loginMember:"+loginMember);
-        if(loginMember != null) {
-            if(bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw())) {
-                LoginMember login = jwtUtils.createToken(loginMember.getMemberNo(), loginMember.getMemberId(),loginMember.getMemberNickname(),loginMember.getMemberRole());
-                System.out.println(333333333);
+
+        if (loginMember != null) {
+            if (bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw())) {
+                LoginMember login = jwtUtils.createToken(loginMember.getMemberNo(), loginMember.getMemberId(), loginMember.getMemberNickname(), loginMember.getMemberRole());
+
                 return login;
             }
             loginMember.setMemberStatus(loginMember.getMemberStatus());
             loginMember.setMemberEmail(loginMember.getMemberEmail());
-            System.out.println(44444);
+
         }
 
 
-    return null;
-}
+        return null;
+    }
+
     // 재토큰을 받아 로그인 연장 구현 로직
     public LoginMember refreshToken(String token) {
         LoginMember loginMember = jwtUtils.cheakToken(token);
@@ -86,9 +88,9 @@ private JwtUtils jwtUtils;
     }
 
     public boolean existByIdAndEmail(String memberId, String memberEmail) {
-        Integer result = memberDao.existByIdAndEmail(memberId,memberEmail);
-        if(result != null && result>0){
-            return  true;
+        Integer result = memberDao.existByIdAndEmail(memberId, memberEmail);
+        if (result != null && result > 0) {
+            return true;
         }
         return false;
     }

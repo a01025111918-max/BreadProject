@@ -16,6 +16,10 @@ public class OrderService {
     @Transactional
     public int payOrder(Order order) {
 
+        // 프론트에서 수량을 막아도 요청은 조작될 수 있으므로, 백엔드에서 최소 주문 수량을 최종 검증한다.
+        if (order.getOrderCount() == null || order.getOrderCount() < 10) {
+            throw new IllegalArgumentException("\uCD5C\uC18C \uC8FC\uBB38 \uC218\uB7C9\uC740 10\uAC1C\uC785\uB2C8\uB2E4.");
+        }
         /*
          * 1. 주문한 빵 정보 조회
          *

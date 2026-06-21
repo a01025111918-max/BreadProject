@@ -36,6 +36,7 @@ public class BreadReviewController {
     @GetMapping
     public ResponseEntity<?> selectReviewList(
             @PathVariable Integer breadNo,
+            //required = false==> 로그인 안 한 사람도 리뷰 목록은 볼 수 있음
             @RequestHeader(value = "Authorization", required = false) String authorization
     ) {
         if (!breadReviewService.existsBread(breadNo)) {
