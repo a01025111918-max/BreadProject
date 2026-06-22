@@ -66,6 +66,12 @@ const Header = () => {
             </button>
           )}
         </div>
+
+        <div className={styles.admin_link_zone}>
+          <button type="submit" onClick={() => navigate("/members/admin")}>
+            관리자
+          </button>
+        </div>
       </nav>
     </header>
   );

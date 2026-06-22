@@ -303,6 +303,34 @@ public class OrderService {
     }
 
 
+    @Transactional
+    public int cancelOrder(Order order) {
+        // The controller puts orderNo and logged-in memberNo into this object.
+        if (order.getOrderNo() == null || order.getMemberNo() == null) {
+            throw new IllegalArgumentException("\uCDE8\uC18C\uD560 \uC8FC\uBB38 \uC815\uBCF4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.");
+        }
+
+        // Only PAID orders owned by the logged-in member can request cancellation.
+        Order cancelOrder = orderDao.selectCancelableOrder(order);
+        if (cancelOrder == null) {
+            throw new IllegalArgumentException("\uCDE8\uC18C \uC694\uCCAD\uD560 \uC218 \uC788\uB294 \uC8FC\uBB38\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.");
+        }
+
+        // Save a simple cancel reason. If the frontend sends nothing, use a default reason.
+        if (order.getCancelReason() == null || order.getCancelReason().trim().isEmpty()) {
+            cancelOrder.setCancelReason("\uC0AC\uC6A9\uC790 \uC8FC\uBB38 \uCDE8\uC18C \uC694\uCCAD");
+        } else {
+            cancelOrder.setCancelReason(order.getCancelReason().trim());
+        }
+
+        // This step is a request, not final cancel approval. Stock/refund can be handled at CANCEL_COMPLETE later.
+        int cancelResult = orderDao.cancelOrder(cancelOrder);
+        if (cancelResult == 0) {
+            throw new RuntimeException("\uC8FC\uBB38 \uCDE8\uC18C \uC694\uCCAD\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+        }
+
+        return 1;
+    }
 }
 
  /*

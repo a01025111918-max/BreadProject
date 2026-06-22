@@ -11,6 +11,8 @@ import SeasonPage from "./page/SeasonPage";
 import FindIdPage from "./page/FindIdPage";
 import FindPwPage from "./page/FindPwPage";
 import ResetPw from "./page/ResetPw";
+import AdminPage from "./page/AdminPage";
+import MyPage from "./page/MyPage";
 import { useEffect } from "react";
 import useAuthStore from "./authstore/useAuthStore";
 import axios from "axios";
@@ -79,6 +81,8 @@ function App() {
         <Route path="/members/find-id" element={<FindIdPage />} />
         <Route path="/members/find-pw" element={<FindPwPage />} />
         <Route path="/members/reset-pw" element={<ResetPw />} />
+        <Route path="members/admin" element={<AdminPage />} />
+        <Route path="/members/mypage" element={<MyPage />} />
       </Routes>
 
       <Footer />

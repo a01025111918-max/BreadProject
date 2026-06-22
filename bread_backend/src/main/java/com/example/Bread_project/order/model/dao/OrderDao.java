@@ -148,4 +148,12 @@ public interface OrderDao {
      * 0 = 재고 부족 또는 차감 실패
      */
     int minusBreadStock(Order order);
+    // Select the completed order that the logged-in member can cancel.
+    Order selectCancelableOrder(Order order);
+
+    // Change order_status from COMPLETED to CANCEL.
+    int cancelOrder(Order order);
+
+    // Put the canceled order count back into bread stock.
+    int restoreBreadStock(Order order);
 }

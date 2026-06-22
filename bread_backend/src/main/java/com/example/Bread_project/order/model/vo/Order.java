@@ -24,4 +24,12 @@ public class Order {
     private Integer breadNo;
     private Integer orderCount;
 
+    // Cancel request date
+    private Date cancelRequestedAt;
+    // Cancel complete date
+    private Date cancelCompletedAt;
+    // Cancel reason written by user
+    private String cancelReason;
+    // Admin member number that approved cancel
+    private Integer cancelAdminNo;
 }

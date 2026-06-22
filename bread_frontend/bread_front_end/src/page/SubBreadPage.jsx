@@ -1,12 +1,13 @@
-import styles from "./SubBreadPage.module.css";
+﻿import styles from "./SubBreadPage.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import useAuthStore from "../authstore/useAuthStore";
 
+// 주문하기 버튼을 눌렀을 때 열리는 주문 팝업 컴포넌트
 const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
-  // B2B 납품 주문 기준값: 최소 10개부터 주문 가능하고, 1박스는 10개로 계산한다.
+  // B2B 주문 기준값: 최소 주문 수량은 10개이고, 1박스는 10개로 계산한다.
   const MIN_ORDER_COUNT = 10;
   const BOX_COUNT = 10;
 
@@ -15,7 +16,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
   const [orderUnit, setOrderUnit] = useState("piece");
   const memberNo = useAuthStore((state) => state.memberNo);
 
-  // 현재 재고가 최소 주문 수량보다 적으면 주문 버튼을 비활성화한다.
+  // 현재 재고가 최소 주문 수량보다 적으면 주문을 막는다.
   const stock = Number(breadDetail.breadStock) || 0;
   const canOrder = stock >= MIN_ORDER_COUNT;
 
@@ -50,7 +51,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
   useEffect(() => {
     if (!isOpen) return;
 
-    // 팝업을 새로 열 때마다 기본값은 개별 주문 10개로 초기화한다.
+    // 팝업을 새로 열 때마다 기본값을 개별 주문 10개로 초기화한다.
     setCount(MIN_ORDER_COUNT);
     setOrderUnit("piece");
 
@@ -88,7 +89,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
       return;
     }
 
-    // 프론트 조작이나 잘못된 입력으로 최소 수량/재고 범위를 벗어난 경우 한 번 더 막는다.
+    // 잘못된 입력이나 프론트 조작으로 최소 수량/재고 범위를 벗어난 경우 한 번 더 막는다.
     if (count < MIN_ORDER_COUNT || count > stock) {
       Swal.fire({
         title: "수량을 확인해주세요.",
@@ -106,13 +107,20 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
       })
       .then((res) => {
         console.log(res.data);
+
         Swal.fire({
-          title: "주문 완료!",
+          title: "주문이 완료되었습니다.",
           icon: "success",
+        }).then(() => {
+          // 주문 번호와 수량을 부모 페이지로 넘겨서 상세 페이지에 주문취소 버튼을 보여준다.
+          onOrderSuccess({
+            orderNo: res.data.orderNo,
+            count: count,
+          });
+
+          setCount(MIN_ORDER_COUNT);
+          onClose();
         });
-        setCount(MIN_ORDER_COUNT);
-        onOrderSuccess();
-        onClose();
       })
       .catch((err) => {
         Swal.fire({
@@ -210,6 +218,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
   );
 };
 
+//부모 컴포넌트
 const SubBreadPage = () => {
   const navigate = useNavigate();
   const { breadNo } = useParams();
@@ -236,7 +245,9 @@ const SubBreadPage = () => {
   const [editRating, setEditRating] = useState(0);
   const [editContent, setEditContent] = useState("");
   const [deleteReview, setDeleteReview] = useState(null);
+  const [completedOrder, setCompletedOrder] = useState(null);
 
+  // 현재 빵에 등록된 후기 목록, 평균 별점, 후기 작성 가능 여부를 조회한다.
   const fetchReviews = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/reviews`)
@@ -255,6 +266,49 @@ const SubBreadPage = () => {
       });
   };
 
+  // 주문이 성공하면 주문 번호를 저장하고 상세 페이지에 주문취소 버튼을 보여준다.
+  const handleOrderSuccess = (orderInfo) => {
+    setCompletedOrder(orderInfo);
+    fetchReviews();
+  };
+
+  // 주문취소 버튼을 눌렀을 때 취소 요청을 백엔드로 보낸다.
+  const handleOrderCancel = () => {
+    if (!completedOrder?.orderNo) {
+      Swal.fire({
+        title: "취소할 주문 정보가 없습니다.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    axios
+      .patch(
+        `${import.meta.env.VITE_BACKSERVER}/orders/${completedOrder.orderNo}/cancel`,
+        {
+          cancelReason: "사용자 주문 취소 요청",
+        },
+      )
+      .then((res) => {
+        console.log(res.data);
+
+        Swal.fire({
+          title: "주문 취소 요청이 완료되었습니다.",
+          icon: "success",
+        }).then(() => {
+          setCompletedOrder(null);
+          fetchReviews();
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+          title: "주문 취소 요청에 실패했습니다.",
+          text: err.response?.data || "잠시 후 다시 시도해주세요.",
+          icon: "warning",
+        });
+      });
+  };
+  // 주문하기 버튼 클릭 전 로그인 상태를 확인한 뒤 주문 팝업을 연다.
   const handleOrderClick = () => {
     if (!isReady) {
       Swal.fire({
@@ -288,6 +342,7 @@ const SubBreadPage = () => {
     setIsOpen(true);
   };
 
+  // 후기 등록 영역을 열고 닫으며, 로그인/구매 여부를 먼저 확인한다.
   const handleReviewToggle = () => {
     if (showReviews) {
       setShowReviews(false);
@@ -316,6 +371,7 @@ const SubBreadPage = () => {
     setShowReviews(true);
   };
 
+  // 사용자가 선택한 별점과 후기 내용을 백엔드에 등록한다.
   const handleReviewSubmit = (e) => {
     e.preventDefault();
 
@@ -384,18 +440,21 @@ const SubBreadPage = () => {
       });
   };
 
+  // 수정하기 버튼을 누르면 기존 후기 내용을 수정 입력 상태로 바꾼다.
   const handleEditClick = (review) => {
     setEditingReviewNo(review.reviewNo);
     setEditRating(review.rating);
     setEditContent(review.reviewContent);
   };
 
+  // 후기 수정 입력을 취소하고 원래 후기 카드 상태로 되돌린다.
   const handleEditCancel = () => {
     setEditingReviewNo(null);
     setEditRating(0);
     setEditContent("");
   };
 
+  // 수정한 별점과 후기 내용을 기존 후기 위에 덮어쓴다.
   const handleReviewUpdate = (e, reviewNo) => {
     e.preventDefault();
 
@@ -558,6 +617,33 @@ const SubBreadPage = () => {
 
         <button
           type="button"
+          className={styles.order_cancel_btn}
+          onClick={() => {
+            // 취소할 주문 정보가 없으면 handleOrderCancel 안에서 안내창을 보여준다.
+            if (!completedOrder?.orderNo) {
+              handleOrderCancel();
+              return;
+            }
+
+            Swal.fire({
+              title: "정말 주문 취소를 요청하시겠습니까?",
+              text: `${completedOrder.count}개를 취소 요청합니다.`,
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonText: "예",
+              cancelButtonText: "아니요",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                handleOrderCancel();
+              }
+            });
+          }}
+        >
+          주문취소
+        </button>
+
+        <button
+          type="button"
           className={styles.review_toggle_btn}
           onClick={handleReviewToggle}
         >
@@ -569,7 +655,7 @@ const SubBreadPage = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         breadDetail={breadDetail}
-        onOrderSuccess={fetchReviews}
+        onOrderSuccess={handleOrderSuccess}
       />
 
       {showReviews && (

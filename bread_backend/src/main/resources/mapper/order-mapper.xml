@@ -114,7 +114,7 @@
         #{orderCount},
         #{totalPrice},
 
-        'COMPLETED',
+        'PAID',
 
         SYSDATE
 
@@ -296,4 +296,40 @@
         and bread_stock >= #{orderCount}
     </update>
 
+    <!-- Select order info before canceling. -->
+    <select id="selectCancelableOrder"
+            parameterType="order"
+            resultType="order">
+        select
+            order_no,
+            member_no,
+            bread_no,
+            order_count,
+            total_price,
+            order_status
+        from order_tbl
+        where order_no = #{orderNo}
+          and member_no = #{memberNo}
+          and order_status = 'PAID'
+    </select>
+
+    <!-- Order cancel logic: only completed orders can be canceled. -->
+    <update id="cancelOrder"
+            parameterType="order">
+        update order_tbl
+        set order_status = 'CANCEL_REQUEST',
+            cancel_requested_at = sysdate,
+            cancel_reason = #{cancelReason}
+        where order_no = #{orderNo}
+          and member_no = #{memberNo}
+          and order_status = 'PAID'
+    </update>
+
+    <!-- Restore stock after canceling the order. -->
+    <update id="restoreBreadStock"
+            parameterType="order">
+        update bread_tbl
+        set bread_stock = bread_stock + #{orderCount}
+        where bread_no = #{breadNo}
+    </update>
 </mapper>
