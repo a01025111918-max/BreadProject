@@ -4,11 +4,15 @@ import com.example.Bread_project.bread.vo.Bread;
 import com.example.Bread_project.order.model.dao.OrderDao;
 import com.example.Bread_project.order.model.vo.AccountLog;
 import com.example.Bread_project.order.model.vo.Order;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
+
 public class OrderService {
     @Autowired
     private OrderDao orderDao;
@@ -303,6 +307,11 @@ public class OrderService {
     }
 
 
+
+    public List<Order> selectMyOrders(Integer memberNo) {
+        // 마이페이지는 로그인한 회원의 주문만 보여주기 때문에 memberNo로 조회한다.
+        return orderDao.selectMyOrders(memberNo);
+    }
     @Transactional
     public int cancelOrder(Order order) {
         // The controller puts orderNo and logged-in memberNo into this object.

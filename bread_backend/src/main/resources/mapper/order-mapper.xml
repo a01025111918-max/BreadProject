@@ -296,6 +296,29 @@
         and bread_stock >= #{orderCount}
     </update>
 
+
+    <!-- 마이페이지 주문 목록 조회 -->
+    <select id="selectMyOrders"
+            parameterType="int"
+            resultType="order">
+        select
+            o.order_no,
+            o.member_no,
+            o.bread_no,
+            b.bread_name as "breadName",
+            o.order_count,
+            o.total_price,
+            o.order_status,
+            o.order_date,
+            o.cancel_requested_at,
+            o.cancel_completed_at,
+            o.cancel_reason,
+            o.cancel_admin_no
+        from order_tbl o
+        join bread_tbl b on o.bread_no = b.bread_no
+        where o.member_no = #{memberNo}
+        order by o.order_date desc
+    </select>
     <!-- Select order info before canceling. -->
     <select id="selectCancelableOrder"
             parameterType="order"

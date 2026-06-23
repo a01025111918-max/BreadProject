@@ -24,6 +24,9 @@ public class Order {
     private Integer breadNo;
     private Integer orderCount;
 
+    // 마이페이지 주문 목록에서 보여줄 빵 이름
+    private String breadName;
+
     // Cancel request date
     private Date cancelRequestedAt;
     // Cancel complete date

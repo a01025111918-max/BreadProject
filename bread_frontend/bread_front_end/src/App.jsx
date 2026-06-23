@@ -12,6 +12,8 @@ import FindIdPage from "./page/FindIdPage";
 import FindPwPage from "./page/FindPwPage";
 import ResetPw from "./page/ResetPw";
 import AdminPage from "./page/AdminPage";
+
+import StorePage from "./page/StorePage";
 import MyPage from "./page/MyPage";
 import { useEffect } from "react";
 import useAuthStore from "./authstore/useAuthStore";
@@ -48,7 +50,7 @@ function App() {
           memberNo: res.data.memberNo,
           memberId: res.data.memberId,
           memberNickname: res.data.memberNickname,
-          memberRole: res.data.memberRole,
+          role: res.data.role || res.data.memberRole,
           memberThumb: res.data.memberThumb,
           memberStatus: res.data.memberStatus,
         });
@@ -83,6 +85,7 @@ function App() {
         <Route path="/members/reset-pw" element={<ResetPw />} />
         <Route path="members/admin" element={<AdminPage />} />
         <Route path="/members/mypage" element={<MyPage />} />
+        <Route path="/members/store" element={<StorePage />} />
       </Routes>
 
       <Footer />

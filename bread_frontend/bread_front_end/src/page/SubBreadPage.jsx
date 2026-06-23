@@ -55,6 +55,7 @@ const OrderPopup = ({ isOpen, onClose, breadDetail, onOrderSuccess }) => {
     setCount(MIN_ORDER_COUNT);
     setOrderUnit("piece");
 
+    //esc를 누를 떄 팝업창이 닫히게 하는 로직
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         onClose();

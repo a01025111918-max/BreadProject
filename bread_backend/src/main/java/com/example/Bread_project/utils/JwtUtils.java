@@ -34,7 +34,7 @@ public class JwtUtils {
                 .claim("memberId",memberId)
                 .claim("memberNo",memberNo)
                 .claim("memberNickname",memberNickname)
-                .claim("memberRoll",memberRole)
+                .claim("memberRole",memberRole)
                 .compact();
 
         LoginMember login = new LoginMember();

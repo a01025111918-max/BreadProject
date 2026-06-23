@@ -1,7 +1,7 @@
 import styles from "./JoinPage.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import EmailAuth from "../emailauth/EmailAuth";
@@ -330,6 +330,10 @@ const JoinPage = () => {
   return (
     //(3) 회원가입 페이지의 UI를 구성하는 JSX 코드
     <div className={styles.join_wrap}>
+      <div className={styles.home_btn}>
+        <Link to="/">홈으로</Link>
+      </div>
+
       <h1 className={styles.page_title}>회원가입</h1>
       <form onSubmit={joinMember}>
         <div className={styles.input_wrap}>

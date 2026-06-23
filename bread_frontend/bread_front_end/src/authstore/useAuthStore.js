@@ -14,7 +14,7 @@ const useAuthStore = create(
       memberNo: null,
       memberId: null,
       memberNickname: null,
-      memberRole: null,
+      role: null,
       memberThumb: null,
       memberStatus: null,
       token: null,
@@ -37,17 +37,21 @@ const useAuthStore = create(
         memberNo,
         memberId,
         memberNickname,
+        role,
         memberRole,
         memberThumb,
         memberStatus,
         token,
         endTime,
       }) => {
+        // 백엔드에서 memberRole로 내려와도 프론트에서는 role 이름으로 저장한다.
+        const loginRole = role || memberRole;
+
         set({
           memberNo,
           memberId,
           memberNickname,
-          memberRole,
+          role: loginRole,
           memberThumb,
           memberStatus,
           token,
@@ -96,7 +100,7 @@ const useAuthStore = create(
           memberNo: null,
           memberId: null,
           memberNickname: null,
-          memberRole: null,
+          role: null,
           memberThumb: null,
           memberStatus: null,
           token: null,
@@ -202,7 +206,7 @@ const useAuthStore = create(
         return {
           memberId: state.memberId,
           memberNickname: state.memberNickname,
-          memberRole: state.memberRole,
+          role: state.role,
           memberStatus: state.memberStatus,
           memberNo: state.memberNo,
           memberThumb: state.memberThumb,
@@ -212,6 +216,11 @@ const useAuthStore = create(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+
+        // 예전에 memberRole로 저장된 값이 있으면 role로 옮겨준다.
+        if (!state.role && state.memberRole) {
+          state.role = state.memberRole;
+        }
 
         state.setReady(true);
 

@@ -4,6 +4,9 @@ import com.example.Bread_project.bread.vo.Bread;
 import com.example.Bread_project.order.model.vo.AccountLog;
 import com.example.Bread_project.order.model.vo.Order;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /*
  * OrderDao
@@ -148,6 +151,9 @@ public interface OrderDao {
      * 0 = 재고 부족 또는 차감 실패
      */
     int minusBreadStock(Order order);
+    // 마이페이지에서 로그인한 회원의 주문 목록을 조회한다.
+    List<Order> selectMyOrders(@Param("memberNo") Integer memberNo);
+
     // Select the completed order that the logged-in member can cancel.
     Order selectCancelableOrder(Order order);
 

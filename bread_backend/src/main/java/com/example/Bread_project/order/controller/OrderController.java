@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -29,15 +31,19 @@ public class OrderController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    // Create order logic.
+    // 회원 주문 로직
     @PostMapping
     public ResponseEntity<?> orderMember(@RequestBody Order order) {
         try {
             int result = orderService.payOrder(order);
 
+            // 제대로 주문이 들어가서 1이 되었을 떄, 리엑트로 보낼 데이터를 포장해주는 로직
+            //--> 그런데 int reuslt=... 이 방식을 안쓰는 이유는? 그렇게 써도 된다. 하지만 편하게 주문번호와 주문 수량을 보낼거면 한번에 포장해서 보내는 Map이 편하기 떄문에
+            //--> Map을 씀.
             if (result > 0) {
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("message", "\uC8FC\uBB38 \uC131\uACF5");
+                //주문 번호와 주문 수량을 담아서 보내기
                 resultMap.put("orderNo", order.getOrderNo());
                 resultMap.put("orderCount", order.getOrderCount());
                 return ResponseEntity.ok(resultMap);
@@ -51,6 +57,28 @@ public class OrderController {
         }
     }
 
+
+    // 마이페이지 주문 목록 조회 로직.
+    @GetMapping(value = "/my")
+    public ResponseEntity<?> selectMyOrders(
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("로그인이 필요합니다.");
+        }
+
+        String token = authorization.replace("Bearer ", "");
+        LoginMember loginMember = jwtUtils.cheakToken(token);
+
+        if (loginMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("유효하지 않은 로그인 정보입니다.");
+        }
+
+        List<Order> orderList = orderService.selectMyOrders(loginMember.getMemberNo());
+        return ResponseEntity.ok(orderList);
+    }
     // Order cancel logic.
     @PatchMapping(value = "/{orderNo}/cancel")
     public ResponseEntity<?> cancelOrder(

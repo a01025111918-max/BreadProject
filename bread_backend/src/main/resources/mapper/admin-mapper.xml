@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.Bread_project.admin.model.dao.AdminDao">
+
+    <!-- 관리자 페이지 주문 완료 목록 조회 -->
+    <select id="selectPaidOrders"
+            resultType="adminOrder">
+        select
+            o.order_no,
+            o.member_no,
+            m.member_id as memberId,
+            nvl(m.member_nickname, m.member_id) as memberNickname,
+            o.bread_no,
+            b.bread_name as breadName,
+            o.order_count,
+            o.total_price,
+            o.order_status,
+            o.order_date
+        from order_tbl o
+        join member_tbl m on o.member_no = m.member_no
+        join bread_tbl b on o.bread_no = b.bread_no
+        where o.order_status = 'PAID'
+        order by o.order_date desc
+    </select>
+
+    <!-- 관리자 페이지 주문 취소 목록 조회 -->
+    <select id="selectCancelOrders"
+            resultType="adminOrder">
+        select
+            o.order_no,
+            o.member_no,
+            m.member_id as memberId,
+            nvl(m.member_nickname, m.member_id) as memberNickname,
+            o.bread_no,
+            b.bread_name as breadName,
+            o.order_count,
+            o.total_price,
+            o.order_status,
+            o.order_date
+        from order_tbl o
+        join member_tbl m on o.member_no = m.member_no
+        join bread_tbl b on o.bread_no = b.bread_no
+        where o.order_status in ('CANCEL_REQUEST', 'CANCEL_COMPLETE', 'REFUND_COMPLETE')
+        order by o.order_date desc
+    </select>
+
+    <!-- 취소 승인 대기 중인 주문 전체 조회 -->
+    <select id="selectCancelRequestOrders"
+            resultType="adminOrder">
+        select
+            o.order_no,
+            o.member_no,
+            m.member_id as memberId,
+            nvl(m.member_nickname, m.member_id) as memberNickname,
+            o.bread_no,
+            b.bread_name as breadName,
+            o.order_count,
+            o.total_price,
+            o.order_status,
+            o.order_date
+        from order_tbl o
+        join member_tbl m on o.member_no = m.member_no
+        join bread_tbl b on o.bread_no = b.bread_no
+        where o.order_status = 'CANCEL_REQUEST'
+        order by o.order_date desc
+    </select>
+
+    <!-- 취소 승인 대기 중인 주문 1건 조회 -->
+    <select id="selectCancelRequestOrder"
+            parameterType="int"
+            resultType="adminOrder">
+        select
+            o.order_no,
+            o.member_no,
+            m.member_id as memberId,
+            nvl(m.member_nickname, m.member_id) as memberNickname,
+            o.bread_no,
+            b.bread_name as breadName,
+            o.order_count,
+            o.total_price,
+            o.order_status,
+            o.order_date
+        from order_tbl o
+        join member_tbl m on o.member_no = m.member_no
+        join bread_tbl b on o.bread_no = b.bread_no
+        where o.order_no = #{orderNo}
+          and o.order_status = 'CANCEL_REQUEST'
+    </select>
+
+    <!-- 취소 요청 주문을 취소 완료 상태로 변경 -->
+    <update id="completeCancelOrder">
+        update order_tbl
+        set order_status = 'CANCEL_COMPLETE',
+            cancel_completed_at = sysdate,
+            cancel_admin_no = #{adminNo}
+        where order_no = #{orderNo}
+          and order_status = 'CANCEL_REQUEST'
+    </update>
+
+    <!-- 취소 승인된 주문 수량만큼 빵 재고 복구 -->
+    <update id="restoreBreadStock">
+        update bread_tbl
+        set bread_stock = bread_stock + #{orderCount}
+        where bread_no = #{breadNo}
+    </update>
+
+</mapper>
