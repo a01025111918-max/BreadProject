@@ -15,7 +15,7 @@ public interface MemberDao {
 
     Member selectOneMemberByNo(Integer memberNo);
 
-    Member selectOneMemberId(String memberId);
+    int selectOneMemberId(String memberId);
 
     String findIdByEmail(String memberEmail);
 

@@ -8,30 +8,35 @@ import Swal from "sweetalert2";
 const FindPwPage = () => {
   const navigate = useNavigate();
 
-  //1. 아이디를 상태를 이용하여 찾기를 위한 상태
+  // 비밀번호를 찾을 회원 아이디
   const [memberId, setMemberId] = useState("");
-  //2. 이메일 값을 가져오기 위한 상태
+
+  // 인증에 사용할 이메일
   const [memberEmail, setMemberEmail] = useState("");
-  //3. 이메일 인증 여부
+
+  // 이메일 인증 완료 여부
   const [emailVerified, setEmailVerified] = useState(false);
 
-  //5. 아이디와 이메일이 입력되었는지 확인하기 위한 로직
+  // 아이디와 이메일 인증 상태를 확인한 뒤 비밀번호 재설정 메일을 요청한다.
   const verifyInput = () => {
-    if (!memberId || !memberEmail) {
-      alert("아이디와 이메일를 입력해주세요");
+    if (!memberId.trim() || !memberEmail.trim()) {
+      Swal.fire({
+        title: "입력 정보를 확인해주세요",
+        text: "아이디와 이메일을 모두 입력해주세요.",
+        icon: "warning",
+      });
       return;
     }
 
-    //6. 이메일 인증 안했으면 차단
     if (!emailVerified) {
-      Swal.fire_({
+      Swal.fire({
         title: "이메일 인증이 필요합니다",
-        text: "이메일 인증을 완료해주세요",
+        text: "이메일 인증을 완료해주세요.",
         icon: "warning",
       });
+      return;
     }
 
-    //7. 아이디와 이메일을 백엔드로 보내기 위한 로직 짜기
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/members/find-pw`, {
         memberId: memberId,
@@ -40,64 +45,80 @@ const FindPwPage = () => {
       .then((res) => {
         console.log(res.data);
         Swal.fire({
-          title: "이메일 링크로 비밀번호 찾기 로직을 보냈습니다.",
-          text: "이메일로 이동해 주세요",
+          title: "비밀번호 재설정 메일을 보냈습니다",
+          text: "이메일에서 재설정 링크를 확인해주세요.",
           icon: "success",
         });
-        return;
       })
       .catch((err) => {
         console.log(err);
         Swal.fire({
           title: "비밀번호 찾기 실패",
-          text: "다시 입력해 주세요",
+          text: "아이디와 이메일을 다시 확인해주세요.",
           icon: "error",
         });
-        return;
       });
   };
 
   return (
-    <div className={styles.find_pw_wrap}>
-      <div className={styles.home_btn}>
-        <button onClick={() => navigate("/")}>HOME</button>
-      </div>
-      <div className={styles.login_btn}>
-        <button onClick={() => navigate("/members/login")}>로그인</button>
-      </div>
-      <div className={styles.find_pw_wrap}>
-        <h1 className="page-title">비밀번호 찾기 페이지</h1>
-      </div>
+    <section className={styles.find_pw_page}>
+      <div className={styles.find_pw_card}>
+        <div className={styles.visual_panel}>
+          <span className={styles.visual_badge}>PASSWORD HELP</span>
+          <h1>비밀번호 찾기</h1>
+          <p>
+            가입한 아이디와 이메일 인증을 확인한 뒤 비밀번호 재설정
+            메일을 보내드립니다.
+          </p>
+        </div>
 
-      {/*4. 아이디와 이메일를 입력받는 컴포넌트 */}
-      <div className={styles.input_wrap}>
-        <label className={styles.label_id}>아이디</label>
-        <input
-          className={styles.input_id}
-          type="text"
-          value={memberId}
-          id="memberId"
-          onChange={(e) => setMemberId(e.target.value)}
-          placeholder="아이디를 입력해주세요"
-        ></input>
+        <div className={styles.find_pw_content}>
+          <div className={styles.top_links}>
+            <button type="button" onClick={() => navigate("/")}>
+              HOME
+            </button>
+            <button type="button" onClick={() => navigate("/members/login")}>
+              로그인
+            </button>
+          </div>
 
-        <EmailAuth
-          memberEmail={memberEmail}
-          setMemberEmail={setMemberEmail}
-          onVerified={setEmailVerified}
-        ></EmailAuth>
+          <div className={styles.title_box}>
+            <span>MEMBER ACCOUNT</span>
+            <h2>비밀번호 찾기</h2>
+            <p>아이디 입력 후 이메일 인증을 완료해주세요.</p>
+          </div>
+
+          <div className={styles.input_wrap}>
+            <label htmlFor="memberId">아이디</label>
+            <input
+              type="text"
+              value={memberId}
+              id="memberId"
+              onChange={(e) => setMemberId(e.target.value)}
+              placeholder="아이디를 입력해주세요"
+            />
+          </div>
+
+          <div className={styles.email_auth_wrap}>
+            <EmailAuth
+              memberEmail={memberEmail}
+              setMemberEmail={setMemberEmail}
+              onVerified={setEmailVerified}
+            />
+          </div>
+
+          <button
+            type="button"
+            className={styles.find_pw_btn}
+            onClick={verifyInput}
+            disabled={!emailVerified}
+          >
+            비밀번호 찾기
+          </button>
+        </div>
       </div>
-
-      {/*8. 비밀번호 찾기 로직을 위한 실행 버튼 만들기 */}
-      <button
-        type="button"
-        className={styles.find_pw_btn}
-        onClick={verifyInput}
-        disabled={!emailVerified}
-      >
-        비밀번호 찾기
-      </button>
-    </div>
+    </section>
   );
 };
+
 export default FindPwPage;

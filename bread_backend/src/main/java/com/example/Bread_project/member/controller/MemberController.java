@@ -31,51 +31,52 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<?> join(@RequestBody Member member) {
         int result = memberService.insertJoin(member);
-        if(result == 1) {
+        if (result == 1) {
             return ResponseEntity.ok("회원가입 성공");
-        }else {
+        } else {
             return ResponseEntity.ok("회원가입 실패");
         }
 
     }
 
     // 아이디 중복체크 설정
-    @GetMapping(value = "/check-Id")
-    public ResponseEntity<?> dupCheckId(@RequestParam String memberId){
+    @GetMapping(value = "/check-id")
+    public ResponseEntity<?> dupCheckId(@RequestParam String memberId) {
         //기존 selectOneMember(memberId)에서는 Member member로 전체를 받아오는
         //-> 로직을 짰기 떄문에 다시 재사용할 경우 문제가 터짐
         //-> 왜냐하면 여기에서는 memberId하나로 조회하기 때문.
         //-> 따라서 메서드명을 바꿔야 함
-        Member m = memberService.selectOneMemberId(memberId);
+        boolean isDuplicate = memberService.selectOneMemberId(memberId);
 
-        return ResponseEntity.ok(m != null);
+        return ResponseEntity.ok(isDuplicate);
     }
 
-    
+
     //로그인
     @PostMapping(value = "/login")
-    public  ResponseEntity<?> Login(@RequestBody Member member){
+    public ResponseEntity<?> Login(@RequestBody Member member) {
         //로그인 요청을 한 회원의 정보가 실제로 데이터 베이스에 존재하는 지를 알려는 것이기 떄문에
         //--> 로직을 m에 다 담아서 리엑트로 보냄.
         LoginMember m = memberService.selectOneMember(member);
-        if(m == null) {
+        if (m == null) {
             return ResponseEntity.status(401).body("로그인에 실패하였습니다");
         }
-        
+
         //로그인을 통해 받아온 정보에서 필요한 것만 리엑트로 보내고 나머지는 차단하기
         //-> 백엔드에서 사전 차단.
         MemberResponse res = new MemberResponse(
                 m.getMemberId(),
                 m.getMemberName(),
+                m.getMemberNickname(),
                 m.getMemberRole(),
                 m.getToken(),
                 m.getEndTime(),
-                m.getMemberNo(),
-                m.getMemberNickname()
+                m.getMemberNo()
+
         );
         return ResponseEntity.ok(res);
     }
-    
+
     // 재토큰을 받아 로그인 연장 구현 로직
     @PostMapping(value = "/refresh")
     public ResponseEntity<?> refreshToken(
@@ -95,16 +96,16 @@ public class MemberController {
         MemberResponse res = new MemberResponse(
                 m.getMemberId(),
                 m.getMemberName(),
+                m.getMemberNickname(),
                 m.getMemberRole(),
                 m.getToken(),
                 m.getEndTime(),
-                m.getMemberNo(),
-                m.getMemberNickname()
+                m.getMemberNo()
+
         );
 
         return ResponseEntity.ok(res);
     }
-
 
 
     // 아이디 찾기 설정(김경건)
@@ -138,24 +139,24 @@ public class MemberController {
 
     //비밀번호 찾기 페이지
     @PostMapping(value = "/find-pw")
-        public ResponseEntity<?> findPw(@RequestBody Member member){
-            String memberId = member.getMemberId();
-            String memberEmail = member.getMemberEmail();
+    public ResponseEntity<?> findPw(@RequestBody Member member) {
+        String memberId = member.getMemberId();
+        String memberEmail = member.getMemberEmail();
 
-            boolean result = memberService.existByIdAndEmail(memberId, memberEmail);
+        boolean result = memberService.existByIdAndEmail(memberId, memberEmail);
 
-            if(result){
-                String title = "비밀번호 재설정 안내";
-                String content = "<h3>비밀번호를 재설정하려면 아래 링크를 클릭하세요</h3>"
-                        + "<a href='http://localhost:5174/members/reset-pw?memberId=" + member.getMemberId()
-                        + "'>비밀번호 재설정하기</a>";
+        if (result) {
+            String title = "비밀번호 재설정 안내";
+            String content = "<h3>비밀번호를 재설정하려면 아래 링크를 클릭하세요</h3>"
+                    + "<a href='http://localhost:5174/members/reset-pw?memberId=" + member.getMemberId()
+                    + "'>비밀번호 재설정하기</a>";
 
-                        emailSender.sendMail(title,member.getMemberEmail(),content);
-                        return ResponseEntity.ok(Map.of("message", "비밀번호 재설정 링크를 이메일로 전송했습니다."));
-            }else {
-                return ResponseEntity.status(404).body("아이디와 이메일이 일치하지 않습니다.");
-            }
+            emailSender.sendMail(title, member.getMemberEmail(), content);
+            return ResponseEntity.ok(Map.of("message", "비밀번호 재설정 링크를 이메일로 전송했습니다."));
+        } else {
+            return ResponseEntity.status(404).body("아이디와 이메일이 일치하지 않습니다.");
         }
+    }
 
 
 }

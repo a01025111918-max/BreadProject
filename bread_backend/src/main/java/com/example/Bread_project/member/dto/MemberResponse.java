@@ -13,9 +13,10 @@ public class MemberResponse {
     //로직 설정 DTO
     private String memberId;
     private String memberName;
+    private String memberNickname;
     private String memberRole;
     private String token;
     private Long endTime;
     private Integer memberNo;
-    private String memberNickname;
+
 }

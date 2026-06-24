@@ -130,8 +130,8 @@ const useAuthStore = create(
           if (!get().token) return;
 
           Swal.fire({
-            title: "로그인 연장하시겠습니까?",
-            text: "로그인 시간이 5분 후에 만료됩니다.",
+            title: "로그인을 연장하시겠습니까?",
+            text: "로그인 시간이 5분 후 만료됩니다.",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "예",
@@ -191,8 +191,8 @@ const useAuthStore = create(
         set({ memberStatus: status });
       },
 
-      setNickname: (nickName) => {
-        set({ memberNickname: nickName });
+      setNickname: (memberNickname) => {
+        set({ memberNickname });
       },
 
       setReady: (ready) => {
@@ -217,7 +217,6 @@ const useAuthStore = create(
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
-        // 예전에 memberRole로 저장된 값이 있으면 role로 옮겨준다.
         if (!state.role && state.memberRole) {
           state.role = state.memberRole;
         }

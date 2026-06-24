@@ -19,7 +19,6 @@ const MyPage = () => {
   // 마이페이지에서 보여줄 내 주문 목록을 저장한다.
   const [orderList, setOrderList] = useState([]);
 
-  // 프로필 이미지가 없으면 기본 이미지를 보여준다.
   const profileImg = memberThumb ? memberThumb : "/images/default_image.png";
 
   useEffect(() => {
@@ -49,10 +48,8 @@ const MyPage = () => {
       });
   }, [memberId]);
 
-  // 주문 상태가 PAID인 주문만 주문 완료 목록에 보여준다.
   const paidOrders = orderList.filter((order) => order.orderStatus === "PAID");
 
-  // 취소와 관련된 주문만 주문 취소 목록에 보여준다.
   const cancelOrders = orderList.filter(
     (order) =>
       order.orderStatus === "CANCEL_REQUEST" ||
@@ -60,7 +57,6 @@ const MyPage = () => {
       order.orderStatus === "REFUND_COMPLETE",
   );
 
-  // 선택한 메뉴에 따라 오른쪽 내용을 바꿔준다.
   const renderContent = () => {
     switch (activeMenu) {
       case "info":
@@ -156,10 +152,7 @@ const MyInfo = ({ profileImg, memberId, memberNickname }) => {
 
 // 주문 목록을 카드 형태로 보여주는 컴포넌트다.
 const OrderList = ({ title, orders }) => {
-  // 현재 보고 있는 페이지 번호를 저장한다.
   const [page, setPage] = useState(0);
-
-  // 한 페이지에 보여줄 카드 개수다.
   const size = 3;
 
   const totalPage = Math.ceil(orders.length / size);
@@ -168,7 +161,6 @@ const OrderList = ({ title, orders }) => {
   const viewOrders = orders.slice(start, end);
 
   useEffect(() => {
-    // 주문 목록이 바뀌면 다시 첫 페이지부터 보여준다.
     setPage(0);
   }, [orders]);
 
@@ -251,7 +243,6 @@ const MyPagePagination = ({ page, setPage, totalPage }) => {
   );
 };
 
-// DB에 저장된 주문 상태명을 화면에서 볼 한글 이름으로 바꿔준다.
 const changeStatusName = (status) => {
   if (status === "PAID") return "주문 완료";
   if (status === "CANCEL_REQUEST") return "취소 요청";

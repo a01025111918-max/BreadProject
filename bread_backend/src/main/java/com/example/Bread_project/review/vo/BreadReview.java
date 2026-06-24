@@ -12,28 +12,28 @@ import java.util.Date;
 @Data
 @Alias(value = "breadReview")
 public class BreadReview {
-    // 후기 번호
+    // ?꾧린 踰덊샇
     private Integer reviewNo;
-    // 후기를 작성할 수 있게 만든 주문 번호
+    // ?꾧린瑜??묒꽦?????덇쾶 留뚮뱺 二쇰Ц 踰덊샇
     private Integer orderNo;
-    // 후기가 달린 빵 번호
+    // ?꾧린媛 ?щ┛ 鍮?踰덊샇
     private Integer breadNo;
-    // 후기를 작성한 회원 번호
+    // ?꾧린瑜??묒꽦???뚯썝 踰덊샇
     private Integer memberNo;
-    // 화면에 보여줄 작성자 닉네임
+    // ?붾㈃??蹂댁뿬以??묒꽦???됰꽕??
     private String nickname;
-    // 사용자가 선택한 별점
+    // ?ъ슜?먭? ?좏깮??蹂꾩젏
     private Double rating;
-    // 사용자가 작성한 후기 내용
+    // ?ъ슜?먭? ?묒꽦???꾧린 ?댁슜
     private String reviewContent;
-    // 후기 사용 여부
+    // ?꾧린 ?ъ슜 ?щ?
     private String reviewStatus;
-    // 후기 최초 작성일
+    // ?꾧린 理쒖큹 ?묒꽦??
     private Date createdDate;
-    // 후기 마지막 수정일
+    // ?꾧린 留덉?留??섏젙??
     private Date updatedDate;
-    // 평균 별점 조회용 보조 값
+    // ?됯퇏 蹂꾩젏 議고쉶??蹂댁“ 媛?
     private Double averageRating;
-    // 후기 개수 조회용 보조 값
+    // ?꾧린 媛쒖닔 議고쉶??蹂댁“ 媛?
     private Integer reviewCount;
 }

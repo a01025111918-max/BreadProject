@@ -1,37 +1,171 @@
 .join_wrap {
-  min-height: 800px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  min-height: calc(100vh - 112px);
+  padding: 62px 20px 86px;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 239, 0.4), #fff7ef 42%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 244, 223, 0.7) 0,
+      rgba(255, 244, 223, 0.7) 12px,
+      rgba(255, 232, 199, 0.5) 12px,
+      rgba(255, 232, 199, 0.5) 24px
+    );
+}
 
-  padding: 20px;
-  margin: 5px;
-  background-color: aliceblue;
+.join_wrap form {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  padding: 34px;
+  border: 3px solid #fff0dc;
+  border-radius: 28px;
+  background: #fffdf9;
+  box-shadow: 0 18px 40px rgba(120, 54, 0, 0.12);
+}
+
+.home_btn {
+  width: min(100%, 560px);
+  margin: 0 auto 16px;
+  text-align: left;
+}
+
+.home_btn a {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #fff0dc;
+  color: #3a281f;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.home_btn a:hover {
+  background: #ff6b00;
+  color: #fff;
 }
 
 .page_title {
+  width: min(100%, 560px);
+  margin: 0 auto 22px;
+  color: #1f1712;
   text-align: center;
+  font-size: 38px;
+  font-weight: 900;
+}
+
+.page_title::after {
+  content: "";
+  display: block;
+  width: 54px;
+  height: 5px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: #ff6b00;
 }
 
 .input_wrap {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  gap: 12px;
 }
 
-/*아이디 중복체크 입력란 아래 메세지*/
-.success {
-  margin-top: 6px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  color: #1f9d55;
+.input_wrap .input_wrap {
+  gap: 12px;
 }
 
-.fail {
-  margin-top: 6px;
-  margin-bottom: 12px;
+.input_wrap label {
+  color: #3a281f;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.input_wrap input,
+.input_field {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 2px solid #f0dcc7;
+  border-radius: 16px;
+  background: #fff;
+  color: #2b211d;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.input_wrap input::placeholder {
+  color: #9c8574;
+  font-weight: 700;
+}
+
+.input_wrap input:focus,
+.input_field:focus {
+  border-color: #ff8a24;
+  background: #fffdf9;
+  box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.12);
+}
+
+.success,
+.fail,
+.check_msg {
+  margin: -2px 0 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
   font-size: 14px;
-  color: #e03131;
+  font-weight: 800;
+}
+
+.success,
+.check_msg {
+  background: #edf8ed;
+  color: #287332;
+}
+
+.fail,
+.invalid {
+  background: #fff0f0;
+  color: #bd2c2c;
+}
+
+.join_wrap :global(.btn.primary) {
+  width: 100%;
+  height: 58px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 18px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(255, 107, 0, 0.22);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.join_wrap :global(.btn.primary):hover {
+  background: #e85f00;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(255, 107, 0, 0.28);
+}
+
+@media (max-width: 620px) {
+  .join_wrap {
+    padding: 36px 14px 64px;
+  }
+
+  .join_wrap form {
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+
+  .page_title {
+    font-size: 32px;
+  }
 }
