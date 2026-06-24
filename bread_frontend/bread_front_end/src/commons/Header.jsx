@@ -4,42 +4,34 @@ import useAuthStore from "../authstore/useAuthStore";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-// TEXT 방식 --> 새로운 방식 -> 이 안에 변수명과 텍스트를 집어넣고, TEXT.변수명을 적으면 해당 텍스트가 출력된다.
-//-> 한데 모아서 관리하기가 쉽다는 장점이 있다.
-const TEXT = {
-  logoutConfirm: "로그아웃 하시겠습니까?",
-  logout: "로그아웃",
-  cancel: "취소",
-  login: "로그인",
-  admin: "관리자",
-  profileAlt: "프로필 이미지",
-  mypageLabel: "마이페이지로 이동",
-  adminPageLabel: "관리자 페이지로 이동",
-  loginRequired: "먼저 로그인을 해주십시오.",
-  loginMove: "로그인 페이지로 이동합니다.",
-};
-
 const Header = () => {
   const navigate = useNavigate();
 
-  // authStore에서 로그인 정보와 프로필 정보를 가져온다.
-  const { token, memberId, role, memberNickname, memberThumb, logout } =
-    useAuthStore((state) => state);
+  // 로그인한 회원 정보를 authStore에서 가져온다.
+  const { token, logout, memberId, memberNickname, memberThumb, role } =
+    useAuthStore();
 
-  // 토큰이 있으면 로그인한 상태로 판단한다.
   const isLogin = Boolean(token);
-
-  // 프로필 이미지가 없으면 public/images/default_image.png를 보여준다.
   const profileImg = memberThumb ? memberThumb : "/images/default_image.png";
 
+  // 프로필 이미지를 누르면 일반 회원은 마이페이지, 관리자는 관리자 페이지로 이동한다.
+  const handleProfileClick = () => {
+    if (role === "ADMIN") {
+      navigate("/members/admin");
+      return;
+    }
+
+    navigate("/members/mypage");
+  };
+
+  // 로그아웃 버튼을 눌렀을 때 확인창을 띄우고 로그아웃 처리한다.
   const handleLogout = async () => {
-    // result에 알림창이 실행할 내용을 집어넣고, 선택버튼에 따라 결과를 실행하기
     const result = await Swal.fire({
-      title: TEXT.logoutConfirm,
+      title: "로그아웃 하시겠습니까?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: TEXT.logout,
-      cancelButtonText: TEXT.cancel,
+      confirmButtonText: "로그아웃",
+      cancelButtonText: "취소",
     });
 
     if (result.isConfirmed) {
@@ -57,7 +49,7 @@ const Header = () => {
             <Link to="/season">SEASON</Link>
           </li>
           <li>
-            <Link to="/">BRAND</Link>
+            <Link to="/members/brand">BRAND</Link>
           </li>
           <li>
             <Link to="/">MENU</Link>
@@ -83,21 +75,12 @@ const Header = () => {
               <button
                 type="button"
                 className={styles.profile_button}
-                onClick={() => {
-                  if (role === "ADMIN") {
-                    navigate("/members/admin");
-                    return;
-                  }
-
-                  navigate("/members/mypage");
-                }}
-                aria-label={
-                  role === "ADMIN" ? TEXT.adminPageLabel : TEXT.mypageLabel
-                }
+                onClick={handleProfileClick}
+                aria-label="마이페이지로 이동"
               >
                 <img
                   src={profileImg}
-                  alt={TEXT.profileAlt}
+                  alt="프로필 이미지"
                   className={styles.profile_img}
                 />
               </button>
@@ -111,12 +94,12 @@ const Header = () => {
                 className={styles.logout_button}
                 onClick={handleLogout}
               >
-                {TEXT.logout}
+                로그아웃
               </button>
             </div>
           ) : (
             <button type="button" onClick={() => navigate("/members/login")}>
-              {TEXT.login}
+              로그인
             </button>
           )}
         </div>

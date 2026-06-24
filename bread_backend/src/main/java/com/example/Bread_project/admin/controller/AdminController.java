@@ -2,6 +2,7 @@ package com.example.Bread_project.admin.controller;
 
 import com.example.Bread_project.admin.model.service.AdminService;
 import com.example.Bread_project.admin.model.vo.AdminOrder;
+import com.example.Bread_project.admin.model.vo.AdminStock;
 import com.example.Bread_project.member.model.vo.LoginMember;
 import com.example.Bread_project.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,6 @@ public class AdminController {
         return ResponseEntity.ok(orderList);
     }
 
-
     // 관리자 주문 취소 목록 조회 로직
     @GetMapping(value = "/orders/cancel")
     public ResponseEntity<?> selectCancelOrders(
@@ -69,16 +69,27 @@ public class AdminController {
         List<AdminOrder> orderList = adminService.selectCancelOrders();
         return ResponseEntity.ok(orderList);
     }
-    // 토큰을 확인해서 로그인한 회원 정보를 가져온다.
-    private LoginMember checkAdmin(String authorization) {
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return null;
+
+    // 관리자 상품 재고 전체 조회 로직
+    @GetMapping(value = "/stocks")
+    public ResponseEntity<?> selectAdminStocks(
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+        LoginMember loginMember = checkAdmin(authorization);
+
+        if (loginMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("로그인이 필요합니다.");
         }
 
-        String token = authorization.replace("Bearer ", "");
-        return jwtUtils.cheakToken(token);
-    }
+        if (!"ADMIN".equals(loginMember.getMemberRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("관리자만 조회할 수 있습니다.");
+        }
 
+        List<AdminStock> stockList = adminService.selectAdminStocks();
+        return ResponseEntity.ok(stockList);
+    }
 
     // 주문 취소 요청을 하나만 승인하는 로직
     @PatchMapping(value = "/orders/cancel/{orderNo}/complete")
@@ -105,7 +116,8 @@ public class AdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    // 주문 취소 요청을 승인하는 로직
+
+    // 주문 취소 요청을 전체 승인하는 로직
     @PatchMapping(value = "/orders/cancel/complete")
     public ResponseEntity<?> completeCancelOrders(
             @RequestHeader(value = "Authorization", required = false) String authorization
@@ -126,4 +138,13 @@ public class AdminController {
         return ResponseEntity.ok(result);
     }
 
+    // 토큰을 확인해서 로그인한 회원 정보를 가져온다.
+    private LoginMember checkAdmin(String authorization) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authorization.replace("Bearer ", "");
+        return jwtUtils.cheakToken(token);
+    }
 }

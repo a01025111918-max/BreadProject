@@ -116,6 +116,29 @@
   font-weight: 900;
 }
 
+.header_right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cancel_complete_btn {
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff8a24;
+  color: #2b180f;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cancel_complete_btn:hover {
+  background: #3a281f;
+  color: #fff8ef;
+}
+
 .empty_box {
   padding: 46px 20px;
   border: 2px dashed #cdb49d;
@@ -124,6 +147,43 @@
   text-align: center;
   font-weight: 800;
   background: #fbf4ed;
+}
+
+.admin_search_form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.admin_search_form input {
+  flex: 1;
+  height: 46px;
+  padding: 0 16px;
+  border: 2px solid #ead8c5;
+  border-radius: 14px;
+  color: #3a281f;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+}
+
+.admin_search_form input:focus {
+  border-color: #ff8a24;
+}
+
+.admin_search_form button {
+  width: 92px;
+  border: 0;
+  border-radius: 14px;
+  background: #3a281f;
+  color: #fff8ef;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin_search_form button:hover {
+  background: #ff8a24;
+  color: #2b180f;
 }
 
 .order_list {
@@ -196,6 +256,113 @@
   font-weight: 700;
 }
 
+.stock_list {
+  display: grid;
+  gap: 16px;
+}
+
+.stock_card {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid #ead8c5;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff, #fbf4ed);
+}
+
+.stock_img_box {
+  width: 150px;
+  height: 130px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff7ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9b8068;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.stock_img_box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stock_info {
+  display: grid;
+  gap: 9px;
+}
+
+.stock_card_top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.stock_card_top strong {
+  color: #241711;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.stock_card_top span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #ffead2;
+  color: #d45c00;
+  font-weight: 900;
+}
+
+.stock_info p {
+  margin: 0;
+  color: #4b3327;
+  font-weight: 700;
+}
+
+.stock_count {
+  display: inline-flex;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #3a281f;
+  color: #ffdbb2 !important;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.pagination button {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ead8c5;
+  border-radius: 12px;
+  background: #fff8ef;
+  color: #3a281f;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled),
+.pagination .active_page {
+  background: #ff8a24;
+  color: #2b180f;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 @media (max-width: 860px) {
   .admin_wrap {
     grid-template-columns: 1fr;
@@ -204,5 +371,13 @@
 
   .order_info_grid {
     grid-template-columns: 1fr;
+  }
+
+  .stock_card {
+    grid-template-columns: 1fr;
+  }
+
+  .stock_img_box {
+    width: 100%;
   }
 }

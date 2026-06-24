@@ -106,4 +106,19 @@
         where bread_no = #{breadNo}
     </update>
 
+    <!-- 관리자 상품 재고 전체 조회 -->
+    <select id="selectAdminStocks"
+            resultType="adminStock">
+        select
+            bread_no,
+            bread_name,
+            bread_price,
+            bread_stock,
+            bread_category,
+            bread_status,
+            bread_thumb
+        from bread_tbl
+        order by bread_no
+    </select>
+
 </mapper>

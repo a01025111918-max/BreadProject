@@ -2,6 +2,7 @@ package com.example.Bread_project.admin.model.service;
 
 import com.example.Bread_project.admin.model.dao.AdminDao;
 import com.example.Bread_project.admin.model.vo.AdminOrder;
+import com.example.Bread_project.admin.model.vo.AdminStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,11 @@ public class AdminService {
     public List<AdminOrder> selectCancelOrders() {
         // 관리자 페이지에 보여줄 주문 취소 목록을 DAO에서 조회한다.
         return adminDao.selectCancelOrders();
+    }
+
+    public List<AdminStock> selectAdminStocks() {
+        // 관리자 페이지에서 보여줄 전체 빵 재고 목록을 DAO에서 조회한다.
+        return adminDao.selectAdminStocks();
     }
 
     @Transactional

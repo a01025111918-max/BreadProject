@@ -1,6 +1,7 @@
 package com.example.Bread_project.admin.model.dao;
 
 import com.example.Bread_project.admin.model.vo.AdminOrder;
+import com.example.Bread_project.admin.model.vo.AdminStock;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,7 @@ public interface AdminDao {
 
     // 취소가 승인된 주문 수량만큼 빵 재고를 복구한다.
     int restoreBreadStock(@Param("breadNo") Integer breadNo, @Param("orderCount") Integer orderCount);
+
+    // 관리자 페이지에서 전체 빵 재고를 조회한다.
+    List<AdminStock> selectAdminStocks();
 }

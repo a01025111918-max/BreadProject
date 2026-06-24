@@ -16,14 +16,14 @@ const MyPage = () => {
   // 현재 선택한 사이드 메뉴를 저장한다.
   const [activeMenu, setActiveMenu] = useState("info");
 
-  // 마이페이지에서 보여줄 주문 목록을 저장한다.
+  // 마이페이지에서 보여줄 내 주문 목록을 저장한다.
   const [orderList, setOrderList] = useState([]);
 
-  // 프로필 이미지가 없을 때 사용할 기본 이미지이다.
+  // 프로필 이미지가 없으면 기본 이미지를 보여준다.
   const profileImg = memberThumb ? memberThumb : "/images/default_image.png";
 
-  // 로그인하지 않은 사용자가 마이페이지에 들어오면 로그인 페이지로 보낸다.
   useEffect(() => {
+    // 로그인을 하지 않은 사용자는 마이페이지에 들어올 수 없다.
     if (isReady && !memberId) {
       Swal.fire({
         title: "로그인 후 이용 가능합니다.",
@@ -35,10 +35,10 @@ const MyPage = () => {
     }
   }, [isReady, memberId, navigate]);
 
-  // 로그인한 회원의 주문 목록을 백엔드에서 가져온다.
   useEffect(() => {
     if (!memberId) return;
 
+    // 로그인한 회원의 주문 목록만 백엔드에서 가져온다.
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/orders/my`)
       .then((res) => {
@@ -52,7 +52,7 @@ const MyPage = () => {
   // 주문 상태가 PAID인 주문만 주문 완료 목록에 보여준다.
   const paidOrders = orderList.filter((order) => order.orderStatus === "PAID");
 
-  // 주문 상태가 취소와 관련된 주문만 주문 취소 목록에 보여준다.
+  // 취소와 관련된 주문만 주문 취소 목록에 보여준다.
   const cancelOrders = orderList.filter(
     (order) =>
       order.orderStatus === "CANCEL_REQUEST" ||
@@ -60,7 +60,7 @@ const MyPage = () => {
       order.orderStatus === "REFUND_COMPLETE",
   );
 
-  // 현재 선택한 메뉴에 따라 오른쪽 내용을 바꿔서 보여준다.
+  // 선택한 메뉴에 따라 오른쪽 내용을 바꿔준다.
   const renderContent = () => {
     switch (activeMenu) {
       case "info":
@@ -82,9 +82,7 @@ const MyPage = () => {
 
   return (
     <section className={styles.mypage_wrap}>
-      {/* 왼쪽 사이드 영역 */}
       <aside className={styles.mypage_aside}>
-        {/* 프로필 영역 */}
         <div className={styles.profile_box}>
           <div className={styles.profile_img_box}>
             <img src={profileImg} alt="프로필 이미지" />
@@ -93,7 +91,6 @@ const MyPage = () => {
           <p>{memberId}</p>
         </div>
 
-        {/* 사이드 메뉴 영역 */}
         <nav className={styles.side_menu}>
           <button
             type="button"
@@ -129,13 +126,12 @@ const MyPage = () => {
         </nav>
       </aside>
 
-      {/* 오른쪽 내용 영역 */}
       <main className={styles.mypage_content}>{renderContent()}</main>
     </section>
   );
 };
 
-// 회원의 기본 정보만 간단하게 보여주는 컴포넌트이다.
+// 회원의 기본 정보를 보여주는 컴포넌트다.
 const MyInfo = ({ profileImg, memberId, memberNickname }) => {
   return (
     <div className={styles.content_box}>
@@ -158,17 +154,36 @@ const MyInfo = ({ profileImg, memberId, memberNickname }) => {
   );
 };
 
-// 주문 목록을 카드 형태로 보여주는 컴포넌트이다.
+// 주문 목록을 카드 형태로 보여주는 컴포넌트다.
 const OrderList = ({ title, orders }) => {
+  // 현재 보고 있는 페이지 번호를 저장한다.
+  const [page, setPage] = useState(0);
+
+  // 한 페이지에 보여줄 카드 개수다.
+  const size = 3;
+
+  const totalPage = Math.ceil(orders.length / size);
+  const start = page * size;
+  const end = start + size;
+  const viewOrders = orders.slice(start, end);
+
+  useEffect(() => {
+    // 주문 목록이 바뀌면 다시 첫 페이지부터 보여준다.
+    setPage(0);
+  }, [orders]);
+
   return (
     <div className={styles.content_box}>
-      <h2>{title}</h2>
+      <div className={styles.content_header}>
+        <h2>{title}</h2>
+        <span>{orders.length}건</span>
+      </div>
 
-      {orders.length === 0 ? (
+      {viewOrders.length === 0 ? (
         <div className={styles.empty_box}>표시할 주문이 없습니다.</div>
       ) : (
         <div className={styles.order_list}>
-          {orders.map((order) => (
+          {viewOrders.map((order) => (
             <div className={styles.order_card} key={order.orderNo}>
               <div className={styles.order_card_top}>
                 <strong>{order.breadName || `빵 번호 ${order.breadNo}`}</strong>
@@ -188,11 +203,55 @@ const OrderList = ({ title, orders }) => {
           ))}
         </div>
       )}
+
+      {totalPage > 1 && (
+        <MyPagePagination page={page} setPage={setPage} totalPage={totalPage} />
+      )}
     </div>
   );
 };
 
-// DB에 저장된 주문 상태명을 화면에 보여줄 한글 이름으로 바꾼다.
+// 주문 목록 아래에 보여줄 간단한 페이지네이션이다.
+const MyPagePagination = ({ page, setPage, totalPage }) => {
+  const pageList = [];
+
+  for (let i = 0; i < totalPage; i++) {
+    pageList.push(i);
+  }
+
+  return (
+    <div className={styles.pagination}>
+      <button
+        type="button"
+        disabled={page === 0}
+        onClick={() => setPage(page - 1)}
+      >
+        이전
+      </button>
+
+      {pageList.map((pageNo) => (
+        <button
+          type="button"
+          key={pageNo}
+          className={page === pageNo ? styles.active_page : ""}
+          onClick={() => setPage(pageNo)}
+        >
+          {pageNo + 1}
+        </button>
+      ))}
+
+      <button
+        type="button"
+        disabled={page === totalPage - 1}
+        onClick={() => setPage(page + 1)}
+      >
+        다음
+      </button>
+    </div>
+  );
+};
+
+// DB에 저장된 주문 상태명을 화면에서 볼 한글 이름으로 바꿔준다.
 const changeStatusName = (status) => {
   if (status === "PAID") return "주문 완료";
   if (status === "CANCEL_REQUEST") return "취소 요청";

@@ -12,6 +12,7 @@ import FindIdPage from "./page/FindIdPage";
 import FindPwPage from "./page/FindPwPage";
 import ResetPw from "./page/ResetPw";
 import AdminPage from "./page/AdminPage";
+import BrandPage from "./page/BrandPage";
 
 import StorePage from "./page/StorePage";
 import MyPage from "./page/MyPage";
@@ -86,6 +87,7 @@ function App() {
         <Route path="members/admin" element={<AdminPage />} />
         <Route path="/members/mypage" element={<MyPage />} />
         <Route path="/members/store" element={<StorePage />} />
+        <Route path="/members/brand" element={<BrandPage />} />
       </Routes>
 
       <Footer />
