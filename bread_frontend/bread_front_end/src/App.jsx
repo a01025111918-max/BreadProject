@@ -13,6 +13,8 @@ import FindPwPage from "./page/FindPwPage";
 import ResetPw from "./page/ResetPw";
 import AdminPage from "./page/AdminPage";
 import BrandPage from "./page/BrandPage";
+import MenuPage from "./page/MenuPage";
+import EventPage from "./page/EventPage";
 
 import StorePage from "./page/StorePage";
 import MyPage from "./page/MyPage";
@@ -87,7 +89,9 @@ function App() {
         <Route path="members/admin" element={<AdminPage />} />
         <Route path="/members/mypage" element={<MyPage />} />
         <Route path="/members/store" element={<StorePage />} />
-        <Route path="/members/brand" element={<BrandPage />} />
+        <Route path="/brand" element={<BrandPage />} />
+        <Route path="/members/menu" element={<MenuPage />} />
+        <Route path="/events" element={<EventPage />} />
       </Routes>
 
       <Footer />

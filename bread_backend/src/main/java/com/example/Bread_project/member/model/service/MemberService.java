@@ -94,6 +94,15 @@ public class MemberService {
         return memberId;
     }
 
+    // 비밀번호 재설정 로직
+    // 단일 update만 수행하므로 별도 트랜잭션을 걸지 않는다.
+    public int resetPw(Member member) {
+        String encPw = bcrypt.encode(member.getMemberPw());
+        member.setMemberPw(encPw);
+        int result = memberDao.updateMemberPw(member);
+        return result;
+    }
+
     public boolean existByIdAndEmail(String memberId, String memberEmail) {
         Integer result = memberDao.existByIdAndEmail(memberId, memberEmail);
         if (result != null && result > 0) {

@@ -1,18 +1,26 @@
-.store_page {
+.event_wrap {
   min-height: calc(100vh - 112px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 22px;
   padding: 70px 24px 96px;
   background:
-    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.9), transparent 24%),
-    radial-gradient(circle at 84% 76%, rgba(255, 107, 0, 0.12), transparent 30%),
-    linear-gradient(180deg, #fff7ea 0%, #fffdf8 48%, #fff5e8 100%);
+    radial-gradient(
+      circle at 20% 24%,
+      rgba(255, 107, 0, 0.16),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 84% 72%,
+      rgba(201, 51, 104, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #fff4e6 0%, #fffaf3 48%, #fff7ef 100%);
 }
 
-.store_page > h1 {
+.event_wrap > h1 {
   margin-bottom: 10px;
   color: #ff6b00;
   font-size: 42px;
@@ -20,18 +28,22 @@
   text-align: center;
 }
 
-.store_page span {
-  width: min(100%, 720px);
-  min-height: 230px;
+.event_wrap span {
+  width: min(100%, 700px);
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 36px 34px;
+  padding: 34px;
   border: 3px solid #fff0dc;
   border-radius: 30px;
   background:
-    radial-gradient(circle at top right, rgba(255, 107, 0, 0.13), transparent 34%),
+    radial-gradient(
+      circle at top right,
+      rgba(201, 51, 104, 0.12),
+      transparent 34%
+    ),
     #fffdf9;
   color: #241711;
   text-align: center;
@@ -41,14 +53,15 @@
   box-shadow: 0 18px 40px rgba(120, 54, 0, 0.14);
 }
 
-.store_page span::before {
-  content: "FRESH STORE";
+.event_wrap span::before {
+  content: "EVENT";
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 126px;
+  width: fit-content;
+  min-width: 92px;
   height: 34px;
-  margin: 0 0 24px;
+  margin: 0 0 26px;
   padding: 0 16px;
   border-radius: 999px;
   background: #fff0dc;
@@ -58,47 +71,37 @@
   font-weight: 900;
 }
 
-.store_page > h2 {
-  width: min(100%, 720px);
+.event_wrap > h2 {
+  width: min(100%, 700px);
   margin: 0;
-  padding: 20px 28px;
+  padding: 22px 28px;
   border-radius: 22px;
-  text-align: center;
-  font-size: 22px;
-  line-height: 1.5;
-  font-weight: 900;
-}
-
-.store_page > h2:nth-of-type(1) {
-  border: 2px solid #ffe0bd;
-  background: rgba(255, 255, 255, 0.88);
-  color: #4f3729;
-}
-
-.store_page > h2:nth-of-type(2) {
   background: #ff6b00;
   color: #fff;
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.45;
+  font-weight: 900;
   box-shadow: 0 14px 26px rgba(255, 107, 0, 0.22);
 }
 
 @media (max-width: 620px) {
-  .store_page {
+  .event_wrap {
     padding: 46px 16px 72px;
   }
 
-  .store_page > h1 {
+  .event_wrap > h1 {
     font-size: 34px;
   }
 
-  .store_page span {
-    min-height: 210px;
-    padding: 32px 22px;
+  .event_wrap span {
+    min-height: 220px;
+    padding: 30px 22px;
     border-radius: 24px;
     font-size: 27px;
   }
 
-  .store_page > h2 {
-    font-size: 19px;
-    padding: 18px 20px;
+  .event_wrap > h2 {
+    font-size: 20px;
   }
 }

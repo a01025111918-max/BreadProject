@@ -158,5 +158,17 @@ public class MemberController {
         }
     }
 
+    // 비밀번호 재설정 로직
+    @PostMapping(value = "/reset-pw")
+    public ResponseEntity<?> resetPw(@RequestBody Member member) {
+        int result = memberService.resetPw(member);
+
+        if (result > 0) {
+            return ResponseEntity.ok("SUCCESS");
+        }
+
+        return ResponseEntity.status(404).body("아이디를 찾을 수 없습니다.");
+    }
+
 
 }

@@ -49,10 +49,10 @@ const Header = () => {
             <Link to="/season">SEASON</Link>
           </li>
           <li>
-            <Link to="/members/brand">BRAND</Link>
+            <Link to="/brand">BRAND</Link>
           </li>
           <li>
-            <Link to="/">MENU</Link>
+            <Link to="/members/menu">MENU</Link>
           </li>
         </ul>
 
@@ -62,7 +62,7 @@ const Header = () => {
 
         <ul className={styles.header_menu}>
           <li>
-            <Link to="/">EVENT</Link>
+            <Link to="/events">EVENT</Link>
           </li>
           <li>
             <Link to="/members/store">STORE</Link>

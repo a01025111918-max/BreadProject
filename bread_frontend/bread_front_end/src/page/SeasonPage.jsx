@@ -130,6 +130,7 @@ const SeasonPage = () => {
   const [seasonBreads, setSeasonBreads] = useState([]);
   const [selectedBread, setSelectedBread] = useState(null);
 
+  //해당 빵에 대한 정보 불러오기
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads`)
@@ -145,7 +146,7 @@ const SeasonPage = () => {
       });
   }, []);
 
-  const handleBuyClick = (bread) => {
+  const handleBuyClick = (breadNo) => {
     if (!isReady) {
       Swal.fire({
         title: "로그인 정보를 불러오는 중입니다.",
@@ -175,7 +176,18 @@ const SeasonPage = () => {
       return;
     }
 
-    setSelectedBread(bread);
+    Swal.fire({
+      title: "구매하시겠습니까?",
+      text: "해당 빵 상세 페이지로 이동합니다.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "구매하기",
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/breads/${breadNo}`);
+      }
+    });
   };
 
   return (
@@ -213,9 +225,9 @@ const SeasonPage = () => {
                 <span>{bread.breadCategory}</span>
                 <h3>{bread.breadName}</h3>
                 <p>
-                  봄의 달콤함을 가득 담은 시즌 한정 크림빵입니다.
-                  부드러운 생크림 사이로 상큼한 단팥 풍미가 퍼져, 가볍지만 오래
-                  기억나는 맛을 선사합니다.
+                  봄의 달콤함을 가득 담은 시즌 한정 크림빵입니다. 부드러운
+                  생크림 사이로 상큼한 단팥 풍미가 퍼져, 가볍지만 오래 기억나는
+                  맛을 선사합니다.
                 </p>
                 <div className={styles.period_box}>판매 기간: 3월 ~ 4월</div>
                 <strong>{bread.breadPrice?.toLocaleString()}원</strong>
@@ -234,7 +246,7 @@ const SeasonPage = () => {
                   <button
                     type="button"
                     className={styles.order_btn}
-                    onClick={() => handleBuyClick(bread)}
+                    onClick={() => handleBuyClick(bread.breadNo)}
                   >
                     구매하기
                   </button>

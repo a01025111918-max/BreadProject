@@ -516,6 +516,7 @@ const SubBreadPage = () => {
       });
   }, [breadNo]);
 
+  //빵 영양 상세 정보 로직
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/nutrition`)

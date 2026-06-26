@@ -72,4 +72,13 @@
         where member_id = #{memberId}
         and member_email = #{memberEmail}
     </select>
+
+    <!-- 비밀번호 재설정 로직 -->
+    <update id="updateMemberPw" parameterType="member">
+        update member_tbl
+        set
+            member_pw = #{memberPw},
+            update_date = sysdate
+        where member_id = #{memberId}
+    </update>
 </mapper>

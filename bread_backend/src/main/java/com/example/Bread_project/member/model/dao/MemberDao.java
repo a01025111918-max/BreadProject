@@ -20,5 +20,7 @@ public interface MemberDao {
     String findIdByEmail(String memberEmail);
 
     //기본적으로 mybaits에서는 값을 하나밖에 보내지 못함. 그런데 @Param을 쓰게되면 값을 두개를 보낼 수 있음.
+     int updateMemberPw(Member member);
+
      Integer existByIdAndEmail(@Param("memberId") String memberId, @Param("memberEmail") String memberEmail);
 }

@@ -1,0 +1,246 @@
+.reset_page {
+  min-height: calc(100vh - 112px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 76px 24px 96px;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255, 107, 0, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 72%, rgba(76, 40, 24, 0.12), transparent 30%),
+    linear-gradient(180deg, #fff4e6 0%, #fffaf3 48%, #fff7ef 100%);
+}
+
+.reset_card {
+  width: min(100%, 1040px);
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  overflow: hidden;
+  border: 4px solid #fff1df;
+  border-radius: 34px;
+  background: #fff;
+  box-shadow: 0 24px 46px rgba(112, 62, 20, 0.17);
+}
+
+.visual_panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 50px 42px;
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(68, 34, 20, 0.2), rgba(255, 107, 0, 0.16)),
+    url("/banner/custard-cream.png") center / cover;
+}
+
+.visual_panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 107, 0, 0.08), rgba(59, 29, 15, 0.78));
+}
+
+.visual_panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.visual_panel span {
+  width: fit-content;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #ff6b00;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.visual_panel h1 {
+  max-width: 340px;
+  margin: 0 0 14px;
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.visual_panel p {
+  max-width: 350px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.reset_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 60px 54px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 107, 0, 0.1), transparent 34%),
+    #fffaf5;
+}
+
+.top_links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.top_links button {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 2px solid #ffd3a5;
+  border-radius: 999px;
+  background: #fff;
+  color: #b04b00;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.top_links button:hover {
+  border-color: #ff9b45;
+  color: #ff6b00;
+}
+
+.title_box {
+  margin-bottom: 26px;
+}
+
+.title_box span {
+  color: #c95100;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.title_box h2 {
+  margin: 7px 0 12px;
+  color: #2b211d;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.title_box p {
+  margin: 0;
+  color: #6b5548;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.input_wrap {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.input_wrap label {
+  color: #3a281f;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.input_wrap input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 2px solid #f0dcc7;
+  border-radius: 16px;
+  background: #fff;
+  color: #2b211d;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.input_wrap input::placeholder {
+  color: #9c8574;
+  font-weight: 700;
+}
+
+.input_wrap input:focus {
+  border-color: #ff8a24;
+  background: #fffdf9;
+  box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.12);
+}
+
+.success_msg,
+.fail_msg {
+  margin: -2px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.success_msg {
+  background: #edf8ed;
+  color: #287332;
+}
+
+.fail_msg {
+  background: #fff0f0;
+  color: #bd2c2c;
+}
+
+.reset_pw_btn {
+  width: 100%;
+  height: 58px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 20px rgba(184, 78, 0, 0.25);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.reset_pw_btn:hover {
+  background: #e95f00;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 860px) {
+  .reset_page {
+    padding: 46px 18px 72px;
+  }
+
+  .reset_card {
+    grid-template-columns: 1fr;
+  }
+
+  .visual_panel {
+    min-height: 230px;
+    padding: 36px 30px;
+  }
+
+  .visual_panel h1 {
+    font-size: 32px;
+  }
+
+  .reset_content {
+    padding: 38px 24px 42px;
+  }
+
+  .title_box h2 {
+    font-size: 36px;
+  }
+}

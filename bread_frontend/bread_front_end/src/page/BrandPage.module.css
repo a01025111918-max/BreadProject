@@ -1,0 +1,149 @@
+.brand_page {
+  min-height: calc(100vh - 112px);
+  padding: 70px 24px 96px;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 239, 0.8), #fff7ef 48%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 244, 223, 0.7) 0,
+      rgba(255, 244, 223, 0.7) 12px,
+      rgba(255, 232, 199, 0.5) 12px,
+      rgba(255, 232, 199, 0.5) 24px
+    );
+}
+
+.brand_hero {
+  width: min(100%, 1060px);
+  margin: 0 auto 34px;
+  padding: 46px 52px;
+  border: 3px solid #fff0dc;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 107, 0, 0.16), transparent 34%),
+    #fffdf9;
+  box-shadow: 0 18px 40px rgba(120, 54, 0, 0.12);
+}
+
+.brand_hero span {
+  color: #c95100;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.brand_hero h1 {
+  margin: 10px 0 16px;
+  color: #241711;
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.brand_hero p {
+  max-width: 720px;
+  margin: 0;
+  color: #62483a;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 700;
+}
+
+.brand_list {
+  width: min(100%, 1060px);
+  display: grid;
+  gap: 18px;
+  margin: 0 auto;
+}
+
+.brand_card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  border: 2px solid #f2d9bd;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 28px rgba(117, 60, 21, 0.1);
+}
+
+.bread_name {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #fff0dc;
+  color: #ff6b00;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.brand_card h2 {
+  margin: 14px 0 10px;
+  color: #211611;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.brand_card p {
+  margin: 0;
+  color: #5f4638;
+  font-size: 17px;
+  line-height: 1.65;
+  font-weight: 700;
+}
+
+.brand_card button {
+  flex: 0 0 auto;
+  height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(255, 107, 0, 0.22);
+}
+
+.brand_card button:hover {
+  background: #e95f00;
+}
+
+.empty_box,
+.loading {
+  width: min(100%, 1060px);
+  margin: 60px auto;
+  padding: 34px;
+  border-radius: 24px;
+  background: #fffdf9;
+  color: #6b5548;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .brand_page {
+    padding: 42px 16px 70px;
+  }
+
+  .brand_hero {
+    padding: 34px 24px;
+  }
+
+  .brand_hero h1 {
+    font-size: 34px;
+  }
+
+  .brand_card {
+    display: block;
+    padding: 24px;
+  }
+
+  .brand_card button {
+    width: 100%;
+    margin-top: 20px;
+  }
+}

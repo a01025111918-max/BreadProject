@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Bread_project.brand.dao.BrandDao">
+
+    <!-- 브랜드 소개 목록 전체 조회 로직 -->
+    <select id="selectBrandList" resultType="brand">
+        select
+            brand_no as brandNo,
+            brand_name as brandName,
+            brand_content as brandContent,
+            bread_name as breadName
+        from brand_tbl
+        order by brand_no
+    </select>
+
+    <!-- 브랜드 번호로 브랜드 소개 정보를 조회하는 로직 -->
+    <select id="selectOneBrand" parameterType="int" resultType="brand">
+        select
+            brand_no as brandNo,
+            brand_name as brandName,
+            brand_content as brandContent,
+            bread_name as breadName
+        from brand_tbl
+        where brand_no = #{brandNo}
+    </select>
+
+</mapper>
