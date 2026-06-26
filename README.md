@@ -41,6 +41,26 @@
 
 
 <img width="1426" height="752" alt="image" src="https://github.com/user-attachments/assets/d94d3d56-cc93-4532-80aa-ceb4faa55191" />
+<img width="1382" height="731" alt="image" src="https://github.com/user-attachments/assets/0c6608a0-ae9a-40ef-97c2-da715819e2a9" />
+<img width="1385" height="690" alt="image" src="https://github.com/user-attachments/assets/2b00f13c-37b0-4485-aac0-0b981c70e23e" />
+
+
+
+
+5. 마이페이지
+
+
+
+
+<img width="1336" height="682" alt="image" src="https://github.com/user-attachments/assets/9ffed2cc-c426-4a63-805a-c7c15fa90e5a" />
+<img width="1402" height="682" alt="image" src="https://github.com/user-attachments/assets/f6040079-d227-453d-90f7-3f34ececc34e" />
+
+
+
+
+
+
+
 
 
 
