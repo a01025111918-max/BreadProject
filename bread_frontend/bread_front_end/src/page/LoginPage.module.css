@@ -198,6 +198,49 @@
   box-shadow: none;
 }
 
+.test_login_box {
+  margin-top: 18px;
+  padding: 18px;
+  border: 2px solid #f4dfc8;
+  border-radius: 18px;
+  background: #fff6ec;
+}
+
+.test_login_box p {
+  margin: 0 0 12px;
+  color: #6b3a1f;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.test_login_buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.test_login_buttons button {
+  height: 46px;
+  border: 2px solid #ff8a24;
+  border-radius: 14px;
+  background: #fff;
+  color: #e95f00;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.test_login_buttons button:hover {
+  background: #ff6b00;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 .search_wrap {
   display: flex;
   align-items: center;
@@ -249,5 +292,9 @@
 
   .title_box h2 {
     font-size: 36px;
+  }
+
+  .test_login_buttons {
+    grid-template-columns: 1fr;
   }
 }

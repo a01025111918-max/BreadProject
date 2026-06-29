@@ -267,6 +267,44 @@ const SubBreadPage = () => {
       });
   };
 
+  // 새로고침하거나 다시 상세 페이지에 들어왔을 때 취소 가능한 주문 정보를 다시 가져온다.
+  const fetchCancelableOrder = () => {
+    if (!token || !breadDetail.breadNo) {
+      setCompletedOrder(null);
+      return;
+    }
+
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/orders/my`)
+      .then((res) => {
+        const orderList = res.data || [];
+
+        // 현재 보고 있는 빵의 주문 완료(PAID) 내역만 골라낸다.
+        const paidOrders = orderList.filter(
+          (order) =>
+            Number(order.breadNo) === Number(breadDetail.breadNo) &&
+            order.orderStatus === "PAID",
+        );
+
+        if (paidOrders.length === 0) {
+          setCompletedOrder(null);
+          return;
+        }
+
+        // 같은 빵을 여러 번 주문했을 수 있으므로 가장 최근 주문을 취소 대상으로 잡는다.
+        paidOrders.sort((a, b) => Number(b.orderNo) - Number(a.orderNo));
+
+        setCompletedOrder({
+          orderNo: paidOrders[0].orderNo,
+          count: paidOrders[0].orderCount,
+        });
+      })
+      .catch((err) => {
+        console.log("취소 가능한 주문 조회 실패:", err);
+        setCompletedOrder(null);
+      });
+  };
+
   // 주문이 성공하면 주문 번호를 저장하고 상세 페이지에 주문취소 버튼을 보여준다.
   const handleOrderSuccess = (orderInfo) => {
     setCompletedOrder(orderInfo);
@@ -521,6 +559,11 @@ const SubBreadPage = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/breads/${breadNo}/nutrition`)
       .then((res) => {
+        //typeof res.data === "string"--> 백엔드에서 보내주는 데이터의 타입이 무엇인지를 검수하는 코드.
+        // 정상적인 경우 백엔드에서는 객체나 혹은 배열 형식으로 데이터를 보내주게 되는데, 값이 null이나 빈값이 발생할 경우
+        //   데이터가 안 오고 "데이터가 없습니다" 같은 텍스트 메시지가 넘어왔을 때,
+        // 프론트엔드에서는 그걸 인식하지 못하고 underfinded로 처리하게 되면서 에러가 발생하게 된다.
+        // 이를 방지하기 위해 미리 데이터 타입을 검사해서 걸러내는 방어적인 코드
         if (typeof res.data === "string") {
           setBreadNutrition(null);
           return;
@@ -536,6 +579,10 @@ const SubBreadPage = () => {
   useEffect(() => {
     fetchReviews();
   }, [breadNo]);
+
+  useEffect(() => {
+    fetchCancelableOrder();
+  }, [token, breadDetail.breadNo]);
 
   // 후기 삭제 로직
   const handleDeleteReview = (reviewNo) => {
@@ -629,7 +676,7 @@ const SubBreadPage = () => {
 
             Swal.fire({
               title: "정말 주문 취소를 요청하시겠습니까?",
-              text: `${completedOrder.count}개를 취소 요청합니다.`,
+              text: `${completedOrder.count || completedOrder.orderCount}개를 취소 요청합니다.`,
               icon: "question",
               showCancelButton: true,
               confirmButtonText: "예",

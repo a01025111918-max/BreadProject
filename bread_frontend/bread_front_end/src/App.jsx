@@ -86,7 +86,7 @@ function App() {
         <Route path="/members/find-id" element={<FindIdPage />} />
         <Route path="/members/find-pw" element={<FindPwPage />} />
         <Route path="/members/reset-pw" element={<ResetPw />} />
-        <Route path="members/admin" element={<AdminPage />} />
+        <Route path="/members/admin" element={<AdminPage />} />
         <Route path="/members/mypage" element={<MyPage />} />
         <Route path="/members/store" element={<StorePage />} />
         <Route path="/brand" element={<BrandPage />} />

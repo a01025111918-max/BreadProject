@@ -21,11 +21,10 @@ const LoginPage = () => {
     });
   };
 
-  const loginMember = (e) => {
-    e.preventDefault();
-
+  // 실제 로그인 요청을 보내는 함수다.
+  const requestLogin = (loginInfo) => {
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/members/login`, member)
+      .post(`${import.meta.env.VITE_BACKSERVER}/members/login`, loginInfo)
       .then((res) => {
         useAuthStore.getState().login(res.data);
         setReady(false);
@@ -50,6 +49,22 @@ const LoginPage = () => {
           icon: "error",
         });
       });
+  };
+
+  const loginMember = (e) => {
+    e.preventDefault();
+    requestLogin(member);
+  };
+
+  // 포트폴리오 방문자가 쉽게 확인할 수 있도록 테스트 계정으로 바로 로그인한다.
+  const loginTestAccount = (memberId, memberPw) => {
+    const testMember = {
+      memberId: memberId,
+      memberPw: memberPw,
+    };
+
+    setMember(testMember);
+    requestLogin(testMember);
   };
 
   return (
@@ -100,6 +115,24 @@ const LoginPage = () => {
           >
             로그인
           </button>
+
+          <div className={styles.test_login_box}>
+            <p>테스트 계정으로 바로 접속하기</p>
+            <div className={styles.test_login_buttons}>
+              <button
+                type="button"
+                onClick={() => loginTestAccount("user1004", "kkk1234!")}
+              >
+                일반회원 로그인
+              </button>
+              <button
+                type="button"
+                onClick={() => loginTestAccount("admin01", "kkk1234!")}
+              >
+                관리자 로그인
+              </button>
+            </div>
+          </div>
 
           <div className={styles.search_wrap}>
             <Link to="/members/find-id">아이디 찾기</Link>
